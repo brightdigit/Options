@@ -113,10 +113,9 @@ identifier_name:
   excluded:
     - id
 excluded:
-  - Tests/*/XCTestManifests.swift
-  - Tests/OptionsTests/XCTestManifests.swift
+  - Tests/**/XCTestManifests.swift
+  - Tests/**/LinuxMain.swift
   - DerivedData
   - .build
-  - Tests/LinuxMain.swift
 indentation_width:
   indentation_width: 2
