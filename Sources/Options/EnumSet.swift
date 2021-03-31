@@ -9,20 +9,18 @@ public struct EnumSet<EnumType: RawRepresentable>: OptionSet
   }
 
   public init(values: [EnumType]) {
-    rawValue = Self.cumulativeValue(basedOnRawValues: values.map { $0.rawValue })
+    let set = Set(values.map { $0.rawValue })
+    rawValue = Self.cumulativeValue(basedOnRawValues: set)
   }
 
-  internal static func cumulativeValue(basedOnRawValues rawValues: [Int]) -> Int {
+  internal static func cumulativeValue(basedOnRawValues rawValues: Set<Int>) -> Int {
     rawValues.map { 1 << $0 }.reduce(0, |)
   }
 }
 
-extension EnumSet: Codable where EnumType: StringRepresentable {
-  public init(from decoder: Decoder) throws {
-    let container = try decoder.singleValueContainer()
-    let strings = try container.decode([String].self)
-    let rawValues = try strings.map(EnumType.rawValue(basedOn:))
-    rawValue = Self.cumulativeValue(basedOnRawValues: rawValues)
+extension EnumSet where EnumType: CaseIterable {
+  public func array() -> [EnumType] {
+    Self.enums(basedOnRawValue: rawValue)
   }
 
   internal static func enums(basedOnRawValue rawValue: Int) -> [EnumType] {
@@ -33,12 +31,23 @@ extension EnumSet: Codable where EnumType: StringRepresentable {
       guard current > 0 else {
         break
       }
-      if current | item.rawValue == item.rawValue {
+      let rawValue = 1 << item.rawValue
+      if current & rawValue != 0 {
         values.append(item)
-        current -= item.rawValue
+        current -= rawValue
       }
     }
     return values
+  }
+}
+
+extension EnumSet: Codable where EnumType: StringRepresentable {
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let strings = try container.decode([String].self)
+    let rawValues = try strings.map(EnumType.rawValue(basedOn:))
+    let set = Set(rawValues)
+    rawValue = Self.cumulativeValue(basedOnRawValues: set)
   }
 
   public func encode(to encoder: Encoder) throws {

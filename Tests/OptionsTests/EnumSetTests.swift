@@ -1,72 +1,58 @@
-//public struct EnumSet<EnumType: RawRepresentable>: OptionSet
-//  where EnumType.RawValue == Int {
-//  public typealias RawValue = EnumType.RawValue
-//
-//  public let rawValue: Int
-//
-//  public init(rawValue: Int) {
-//    self.rawValue = rawValue
-//  }
-//
-//  public init(values: [EnumType]) {
-//    rawValue = Self.cumulativeValue(basedOnRawValues: values.map { $0.rawValue })
-//  }
-//
-//  internal static func cumulativeValue(basedOnRawValues rawValues: [Int]) -> Int {
-//    rawValues.map { 1 << $0 }.reduce(0, |)
-//  }
-//}
-//
-//extension EnumSet: Codable where EnumType: StringRepresentable {
-//  public init(from decoder: Decoder) throws {
-//    let container = try decoder.singleValueContainer()
-//    let strings = try container.decode([String].self)
-//    let rawValues = try strings.map(EnumType.rawValue(basedOn:))
-//    rawValue = Self.cumulativeValue(basedOnRawValues: rawValues)
-//  }
-//
-//  internal static func enums(basedOnRawValue rawValue: Int) -> [EnumType] {
-//    let cases = EnumType.allCases.sorted { $0.rawValue < $1.rawValue }
-//    var values = [EnumType]()
-//    var current = rawValue
-//    for item in cases {
-//      guard current > 0 else {
-//        break
-//      }
-//      if current | item.rawValue == item.rawValue {
-//        values.append(item)
-//        current -= item.rawValue
-//      }
-//    }
-//    return values
-//  }
-//
-//  public func encode(to encoder: Encoder) throws {
-//    var container = encoder.singleValueContainer()
-//    let values = Self.enums(basedOnRawValue: rawValue)
-//    let strings = try values
-//      .map { $0.rawValue }
-//      .map(EnumType.string(basedOn:))
-//    try container.encode(strings)
-//  }
-//}
 @testable import Options
 import XCTest
 
 final class EnumSetTests: XCTestCase {
+  static let text = "[\"a\",\"b\",\"c\"]"
+
   func testDecoder() {
-    XCTFail()
+    let data = Self.text.data(using: .utf8)!
+    let decoder = JSONDecoder()
+    let actual: EnumSet<MockEnum>
+    do {
+      actual = try decoder.decode(EnumSet<MockEnum>.self, from: data)
+    } catch {
+      XCTAssertNil(error)
+      return
+    }
+    XCTAssertEqual(actual.rawValue, 7)
   }
-  
+
   func testEncoder() {
-    XCTFail()
+    let enumSet = EnumSet<MockEnum>(values: [.a, .b, .c])
+    let encoder = JSONEncoder()
+    let data: Data
+    do {
+      data = try encoder.encode(enumSet)
+    } catch {
+      XCTAssertNil(error)
+      return
+    }
+
+    let dataText = String(bytes: data, encoding: .utf8)
+
+    guard let text = dataText else {
+      XCTAssertNotNil(dataText)
+      return
+    }
+
+    XCTAssertEqual(text, Self.text)
   }
-  
+
+  func testInitValue() {
+    let set = EnumSet<MockEnum>(rawValue: 7)
+    XCTAssertEqual(set.rawValue, 7)
+  }
+
   func testInitValues() {
-    XCTFail()
+    let values: [MockEnum] = [.a, .b, .c]
+    let set = EnumSet(values: values)
+    XCTAssertEqual(set.rawValue, 7)
   }
-  
-  func testAsEnums () {
-    XCTFail()
+
+  func testArray() {
+    let expected: [MockEnum] = [.b, .d]
+    let enumSet = EnumSet<MockEnum>(values: expected)
+    let actual = enumSet.array()
+    XCTAssertEqual(actual, expected)
   }
 }

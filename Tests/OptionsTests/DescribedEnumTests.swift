@@ -1,34 +1,39 @@
-//public struct DescribedEnum<EnumType: StringRepresentable>: Codable {
-//  public let value: EnumType
-//
-//  public init(from decoder: Decoder) throws {
-//    let container = try decoder.singleValueContainer()
-//    let label = try container.decode(String.self)
-//    let rawValue = try EnumType.rawValue(basedOn: label)
-//    guard let value = EnumType(rawValue: rawValue) else {
-//      throw DecodingError.dataCorrupted(
-//        DecodingError.Context(codingPath: [], debugDescription: "Invalid String Value.")
-//      )
-//    }
-//    self.value = value
-//  }
-//
-//  public func encode(to encoder: Encoder) throws {
-//    let string = try EnumType.string(basedOn: value.rawValue)
-//    var container = encoder.singleValueContainer()
-//    try container.encode(string)
-//  }
-//}
-
 @testable import Options
 import XCTest
 
-final class DescribedEnumTests: XCTestCase {
-  func testDecoder() throws {
-    XCTFail()
+internal final class DescribedEnumTests: XCTestCase {
+  fileprivate static let text = "\"a\""
+  internal func testDecoder() throws {
+    let data = Self.text.data(using: .utf8)!
+    let decoder = JSONDecoder()
+    let actual: DescribedEnum<MockEnum>
+    do {
+      actual = try decoder.decode(DescribedEnum<MockEnum>.self, from: data)
+    } catch {
+      XCTAssertNil(error)
+      return
+    }
+    XCTAssertEqual(actual.value, .a)
   }
-  
-  func testEncoder() throws {
-    XCTFail()
+
+  internal func testEncoder() throws {
+    let encoder = JSONEncoder()
+    let describedEnum: DescribedEnum<MockEnum> = .init(value: .a)
+    let data: Data
+    do {
+      data = try encoder.encode(describedEnum)
+    } catch {
+      XCTAssertNil(error)
+      return
+    }
+
+    let dataText = String(bytes: data, encoding: .utf8)
+
+    guard let text = dataText else {
+      XCTAssertNotNil(dataText)
+      return
+    }
+
+    XCTAssertEqual(text, Self.text)
   }
 }

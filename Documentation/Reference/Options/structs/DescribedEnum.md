@@ -14,6 +14,12 @@ public let value: EnumType
 ```
 
 ## Methods
+### `init(value:)`
+
+```swift
+public init(value: EnumType)
+```
+
 ### `init(from:)`
 
 ```swift

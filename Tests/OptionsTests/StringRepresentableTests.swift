@@ -1,20 +1,11 @@
-//public protocol StringRepresentable: RawRepresentable, CaseIterable {
-//  static func rawValue(basedOn string: String) throws -> RawValue
-//  static func string(basedOn rawValue: RawValue) throws -> String
-//}
-//
-//public extension StringRepresentable {
-//  func stringValue() throws -> String {
-//    try Self.string(basedOn: rawValue)
-//  }
-//}
-
-
 @testable import Options
 import XCTest
 
 final class StringRepresentableTests: XCTestCase {
   func testStringValue() {
-    XCTFail()
+    try XCTAssertEqual(MockEnum.a.stringValue(), "a")
+    try XCTAssertEqual(MockEnum.b.stringValue(), "b")
+    try XCTAssertEqual(MockEnum.c.stringValue(), "c")
+    try XCTAssertEqual(MockEnum.d.stringValue(), "d")
   }
 }

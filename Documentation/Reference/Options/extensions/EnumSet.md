@@ -2,10 +2,16 @@
 
 # `EnumSet`
 ```swift
-extension EnumSet: Codable where EnumType: StringRepresentable
+extension EnumSet where EnumType: CaseIterable
 ```
 
 ## Methods
+### `array()`
+
+```swift
+public func array() -> [EnumType]
+```
+
 ### `init(from:)`
 
 ```swift
