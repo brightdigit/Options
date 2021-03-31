@@ -1,11 +1,11 @@
 @testable import Options
 import XCTest
 
-final class StringRepresentableTests: XCTestCase {
+final class MappedValueRepresentableTests: XCTestCase {
   func testStringValue() {
-    try XCTAssertEqual(MockEnum.a.stringValue(), "a")
-    try XCTAssertEqual(MockEnum.b.stringValue(), "b")
-    try XCTAssertEqual(MockEnum.c.stringValue(), "c")
-    try XCTAssertEqual(MockEnum.d.stringValue(), "d")
+    try XCTAssertEqual(MockEnum.a.mappedValue(), "a")
+    try XCTAssertEqual(MockEnum.b.mappedValue(), "b")
+    try XCTAssertEqual(MockEnum.c.mappedValue(), "c")
+    try XCTAssertEqual(MockEnum.d.mappedValue(), "d")
   }
 }

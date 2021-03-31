@@ -6,9 +6,9 @@ internal final class DescribedEnumTests: XCTestCase {
   internal func testDecoder() throws {
     let data = Self.text.data(using: .utf8)!
     let decoder = JSONDecoder()
-    let actual: DescribedEnum<MockEnum>
+    let actual: MappedEnum<MockEnum>
     do {
-      actual = try decoder.decode(DescribedEnum<MockEnum>.self, from: data)
+      actual = try decoder.decode(MappedEnum<MockEnum>.self, from: data)
     } catch {
       XCTAssertNil(error)
       return
@@ -18,7 +18,7 @@ internal final class DescribedEnumTests: XCTestCase {
 
   internal func testEncoder() throws {
     let encoder = JSONEncoder()
-    let describedEnum: DescribedEnum<MockEnum> = .init(value: .a)
+    let describedEnum: MappedEnum<MockEnum> = .init(value: .a)
     let data: Data
     do {
       data = try encoder.encode(describedEnum)

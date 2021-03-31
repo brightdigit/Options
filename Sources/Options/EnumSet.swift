@@ -13,7 +13,8 @@ public struct EnumSet<EnumType: RawRepresentable>: OptionSet
     rawValue = Self.cumulativeValue(basedOnRawValues: set)
   }
 
-  internal static func cumulativeValue(basedOnRawValues rawValues: Set<Int>) -> Int {
+  internal static func cumulativeValue(
+    basedOnRawValues rawValues: Set<Int>) -> Int {
     rawValues.map { 1 << $0 }.reduce(0, |)
   }
 }
@@ -41,7 +42,8 @@ extension EnumSet where EnumType: CaseIterable {
   }
 }
 
-extension EnumSet: Codable where EnumType: StringRepresentable {
+extension EnumSet: Codable
+  where EnumType: MappedValueRepresentable, EnumType.MappedType: Codable {
   public init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
     let strings = try container.decode([String].self)
@@ -55,7 +57,7 @@ extension EnumSet: Codable where EnumType: StringRepresentable {
     let values = Self.enums(basedOnRawValue: rawValue)
     let strings = try values
       .map { $0.rawValue }
-      .map(EnumType.string(basedOn:))
+      .map(EnumType.mappedValue(basedOn:))
     try container.encode(strings)
   }
 }

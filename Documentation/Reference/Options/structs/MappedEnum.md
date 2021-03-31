@@ -1,9 +1,10 @@
 **STRUCT**
 
-# `DescribedEnum`
+# `MappedEnum`
 
 ```swift
-public struct DescribedEnum<EnumType: StringRepresentable>: Codable
+public struct MappedEnum<EnumType: MappedValueRepresentable>: Codable
+  where EnumType.MappedType: Codable
 ```
 
 ## Properties

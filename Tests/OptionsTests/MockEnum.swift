@@ -2,8 +2,10 @@ import Options
 
 // swiftlint:disable identifier_name
 
-internal enum MockEnum: Int, StringCollectionRepresented {
-  internal static let strings = [
+internal enum MockEnum: Int, MappedValueCollectionRepresented {
+  typealias MappedType = String
+
+  internal static let mappedValues = [
     "a",
     "b",
     "c",

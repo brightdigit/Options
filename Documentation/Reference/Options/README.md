@@ -2,24 +2,24 @@
 
 ## Protocols
 
--   [StringCollectionRepresented](protocols/StringCollectionRepresented.md)
--   [StringRepresentable](protocols/StringRepresentable.md)
+-   [MappedValueCollectionRepresented](protocols/MappedValueCollectionRepresented.md)
+-   [MappedValueRepresentable](protocols/MappedValueRepresentable.md)
 
 ## Structs
 
--   [DescribedEnum](structs/DescribedEnum.md)
 -   [EnumSet](structs/EnumSet.md)
+-   [MappedEnum](structs/MappedEnum.md)
 
 ## Enums
 
--   [StringCollectionRepresentedError](enums/StringCollectionRepresentedError.md)
+-   [MappedValueCollectionRepresentedError](enums/MappedValueCollectionRepresentedError.md)
 
 ## Extensions
 
 -   [Array](extensions/Array.md)
 -   [EnumSet](extensions/EnumSet.md)
--   [StringCollectionRepresented](extensions/StringCollectionRepresented.md)
--   [StringRepresentable](extensions/StringRepresentable.md)
+-   [MappedValueCollectionRepresented](extensions/MappedValueCollectionRepresented.md)
+-   [MappedValueRepresentable](extensions/MappedValueRepresentable.md)
 
 ## Typealiases
 

@@ -1,4 +1,5 @@
-public struct DescribedEnum<EnumType: StringRepresentable>: Codable {
+public struct MappedEnum<EnumType: MappedValueRepresentable>: Codable
+  where EnumType.MappedType: Codable {
   public let value: EnumType
 
   public init(value: EnumType) {
@@ -16,7 +17,7 @@ public struct DescribedEnum<EnumType: StringRepresentable>: Codable {
   }
 
   public func encode(to encoder: Encoder) throws {
-    let string = try EnumType.string(basedOn: value.rawValue)
+    let string = try EnumType.mappedValue(basedOn: value.rawValue)
     var container = encoder.singleValueContainer()
     try container.encode(string)
   }
