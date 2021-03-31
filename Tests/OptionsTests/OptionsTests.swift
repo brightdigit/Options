@@ -16,9 +16,13 @@ public enum ContinuousIntegrationSystem: Int, CaseIterable, StringCollectionRepr
 }
 
 final class OptionsTests: XCTestCase {
-  func testExample() {
-    let collection = [ContinuousIntegrationSystem.github, ContinuousIntegrationSystem.circleci, ContinuousIntegrationSystem.bitrise].map {
-      try! $0.stringValue()
+  func testExample() throws {
+    let collection = try [
+      ContinuousIntegrationSystem.github,
+      ContinuousIntegrationSystem.circleci,
+      ContinuousIntegrationSystem.bitrise
+    ].map {
+      try $0.stringValue()
     }.joined(separator: "\", \"")
     XCTAssertEqual(collection, "github\", \"circleci\", \"bitrise")
     let json = "[\"\(collection)\"]"

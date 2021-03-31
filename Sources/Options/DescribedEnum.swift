@@ -6,7 +6,9 @@ public struct DescribedEnum<EnumType: StringRepresentable>: Codable {
     let label = try container.decode(String.self)
     let rawValue = try EnumType.rawValue(basedOn: label)
     guard let value = EnumType(rawValue: rawValue) else {
-      throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Invalid String Value."))
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(codingPath: [], debugDescription: "Invalid String Value.")
+      )
     }
     self.value = value
   }

@@ -1,4 +1,5 @@
-public struct EnumSet<EnumType: RawRepresentable>: OptionSet where EnumType.RawValue == Int {
+public struct EnumSet<EnumType: RawRepresentable>: OptionSet
+  where EnumType.RawValue == Int {
   public let rawValue: Int
   public typealias RawValue = EnumType.RawValue
 
