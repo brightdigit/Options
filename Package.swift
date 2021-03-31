@@ -40,7 +40,7 @@ let package = Package(
 #if canImport(PackageConfig)
   import PackageConfig
 
-  let requiredCoverage: Int = 40
+  let requiredCoverage: Int = 100
 
   let config = PackageConfiguration([
     "komondor": [
@@ -50,6 +50,7 @@ let package = Package(
       ],
       "pre-commit": [
         "swift test --enable-code-coverage --enable-test-discovery --generate-linuxmain",
+        "swift run swift-test-codecov .build/debug/codecov/Options.json -v \(requiredCoverage)",
         "swift run swiftformat .",
         "swift run swiftlint autocorrect",
         "swift run sourcedocs generate build -cra",
