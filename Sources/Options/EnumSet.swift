@@ -1,13 +1,19 @@
+/// Generic struct for using Enums with RawValue type of Int as an Optionset
 public struct EnumSet<EnumType: RawRepresentable>: OptionSet
   where EnumType.RawValue == Int {
   public typealias RawValue = EnumType.RawValue
 
+  /// Raw Value of the OptionSet
   public let rawValue: Int
 
+  /// Creates the EnumSet based on the `rawValue`
+  /// - Parameter rawValue: Integer raw value of the OptionSet
   public init(rawValue: Int) {
     self.rawValue = rawValue
   }
 
+  /// Creates the EnumSet based on the values in the array.
+  /// - Parameter values: Array of enum values.
   public init(values: [EnumType]) {
     let set = Set(values.map { $0.rawValue })
     rawValue = Self.cumulativeValue(basedOnRawValues: set)
@@ -37,6 +43,8 @@ extension EnumSet where EnumType: CaseIterable {
     return values
   }
 
+  /// Returns an array of the enum values based on the OptionSet
+  /// - Returns: Array for each value represented by the enum.
   public func array() -> [EnumType] {
     Self.enums(basedOnRawValue: rawValue)
   }
@@ -44,20 +52,24 @@ extension EnumSet where EnumType: CaseIterable {
 
 extension EnumSet: Codable
   where EnumType: MappedValueRepresentable, EnumType.MappedType: Codable {
+  /// Decodes the EnumSet based on an Array of MappedTypes.
+  /// - Parameter decoder: Decoder which contains info as an array of MappedTypes.
   public init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
-    let strings = try container.decode([String].self)
-    let rawValues = try strings.map(EnumType.rawValue(basedOn:))
+    let values = try container.decode([EnumType.MappedType].self)
+    let rawValues = try values.map(EnumType.rawValue(basedOn:))
     let set = Set(rawValues)
     rawValue = Self.cumulativeValue(basedOnRawValues: set)
   }
 
+  /// Encodes the EnumSet based on an Array of MappedTypes.
+  /// - Parameter encoder: Encoder which will contain info as an array of MappedTypes.
   public func encode(to encoder: Encoder) throws {
     var container = encoder.singleValueContainer()
     let values = Self.enums(basedOnRawValue: rawValue)
-    let strings = try values
+    let mappedValues = try values
       .map { $0.rawValue }
       .map(EnumType.mappedValue(basedOn:))
-    try container.encode(strings)
+    try container.encode(mappedValues)
   }
 }
