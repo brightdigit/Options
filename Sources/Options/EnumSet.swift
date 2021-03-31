@@ -20,10 +20,6 @@ public struct EnumSet<EnumType: RawRepresentable>: OptionSet
 }
 
 extension EnumSet where EnumType: CaseIterable {
-  public func array() -> [EnumType] {
-    Self.enums(basedOnRawValue: rawValue)
-  }
-
   internal static func enums(basedOnRawValue rawValue: Int) -> [EnumType] {
     let cases = EnumType.allCases.sorted { $0.rawValue < $1.rawValue }
     var values = [EnumType]()
@@ -39,6 +35,10 @@ extension EnumSet where EnumType: CaseIterable {
       }
     }
     return values
+  }
+
+  public func array() -> [EnumType] {
+    Self.enums(basedOnRawValue: rawValue)
   }
 }
 

@@ -2,8 +2,9 @@
 import XCTest
 
 internal final class DescribedEnumTests: XCTestCase {
-  fileprivate static let text = "\"a\""
+  private static let text = "\"a\""
   internal func testDecoder() throws {
+    // swiftlint:disable:next force_unwrapping
     let data = Self.text.data(using: .utf8)!
     let decoder = JSONDecoder()
     let actual: MappedEnum<MockEnum>

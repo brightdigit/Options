@@ -16,7 +16,6 @@
 
 ## Extensions
 
--   [Array](extensions/Array.md)
 -   [EnumSet](extensions/EnumSet.md)
 -   [MappedValueCollectionRepresented](extensions/MappedValueCollectionRepresented.md)
 -   [MappedValueRepresentable](extensions/MappedValueRepresentable.md)

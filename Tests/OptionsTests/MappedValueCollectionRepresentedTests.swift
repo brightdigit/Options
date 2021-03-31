@@ -1,22 +1,22 @@
 @testable import Options
 import XCTest
 
-final class MappedValueCollectionRepresentedTests: XCTestCase {
-  func testRawValue() {
+internal final class MappedValueCollectionRepresentedTests: XCTestCase {
+  internal func testRawValue() {
     try XCTAssertEqual(MockEnum.rawValue(basedOn: "a"), 0)
     try XCTAssertEqual(MockEnum.rawValue(basedOn: "b"), 1)
     try XCTAssertEqual(MockEnum.rawValue(basedOn: "c"), 2)
     try XCTAssertEqual(MockEnum.rawValue(basedOn: "d"), 3)
   }
 
-  func testString() {
+  internal func testString() {
     try XCTAssertEqual(MockEnum.mappedValue(basedOn: 0), "a")
     try XCTAssertEqual(MockEnum.mappedValue(basedOn: 1), "b")
     try XCTAssertEqual(MockEnum.mappedValue(basedOn: 2), "c")
     try XCTAssertEqual(MockEnum.mappedValue(basedOn: 3), "d")
   }
 
-  func testRawValueFailure() {
+  internal func testRawValueFailure() {
     let caughtError: MappedValueCollectionRepresentedError?
     do {
       _ = try MockEnum.rawValue(basedOn: "e")
@@ -31,7 +31,7 @@ final class MappedValueCollectionRepresentedTests: XCTestCase {
     XCTAssertEqual(caughtError, .valueNotFound)
   }
 
-  func testStringFailure() {
+  internal func testStringFailure() {
     let caughtError: MappedValueCollectionRepresentedError?
     do {
       _ = try MockEnum.mappedValue(basedOn: .max)
