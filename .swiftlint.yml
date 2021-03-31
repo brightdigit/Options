@@ -114,7 +114,7 @@ identifier_name:
     - id
 excluded:
   - Tests/*/XCTestManifests.swift
-  - Tests/MistKitTests/XCTestManifests.swift
+  - Tests/OptionsTests/XCTestManifests.swift
   - DerivedData
   - .build
   - Tests/LinuxMain.swift
