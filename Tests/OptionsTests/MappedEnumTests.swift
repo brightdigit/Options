@@ -1,7 +1,7 @@
 @testable import Options
 import XCTest
 
-internal final class DescribedEnumTests: XCTestCase {
+internal final class MappedEnumTests: XCTestCase {
   private static let text = "\"a\""
   internal func testDecoder() throws {
     // swiftlint:disable:next force_unwrapping
