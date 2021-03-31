@@ -46,7 +46,7 @@
   }
 
   public func __allTests() -> [XCTestCaseEntry] {
-    return [
+    [
       testCase(DescribedEnumTests.__allTests__DescribedEnumTests),
       testCase(EnumSetTests.__allTests__EnumSetTests),
       testCase(MappedValueCollectionRepresentedTests.__allTests__MappedValueCollectionRepresentedTests),
