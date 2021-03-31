@@ -2,10 +2,6 @@ public protocol StringCollectionRepresented: StringRepresentable where RawValue 
   static var strings: [String] { get }
 }
 
-enum StringCollectionRepresentedError: Error {
-  case stringNotFound
-}
-
 public extension StringCollectionRepresented {
   static func rawValue(basedOn string: String) throws -> RawValue {
     guard let index = strings.firstIndex(of: string) else {

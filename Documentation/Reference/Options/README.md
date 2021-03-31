@@ -10,10 +10,16 @@
 -   [DescribedEnum](structs/DescribedEnum.md)
 -   [EnumSet](structs/EnumSet.md)
 
+## Enums
+
+-   [StringCollectionRepresentedError](enums/StringCollectionRepresentedError.md)
+
 ## Extensions
 
+-   [Array](extensions/Array.md)
 -   [EnumSet](extensions/EnumSet.md)
 -   [StringCollectionRepresented](extensions/StringCollectionRepresented.md)
+-   [StringRepresentable](extensions/StringRepresentable.md)
 
 ## Typealiases
 

@@ -3,7 +3,7 @@ public protocol StringRepresentable: RawRepresentable, CaseIterable {
   static func string(basedOn rawValue: RawValue) throws -> String
 }
 
-extension StringRepresentable {
+public extension StringRepresentable {
   func stringValue() throws -> String {
     try Self.string(basedOn: rawValue)
   }

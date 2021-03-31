@@ -1,4 +1,4 @@
-extension Array {
+public extension Array {
   func ifNil<Wrapped, Failure: Error>(
     throw error: @autoclosure () -> Failure
   ) throws -> [Wrapped] where Element == Wrapped? {

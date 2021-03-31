@@ -6,6 +6,13 @@
 public struct DescribedEnum<EnumType: StringRepresentable>: Codable
 ```
 
+## Properties
+### `value`
+
+```swift
+public let value: EnumType
+```
+
 ## Methods
 ### `init(from:)`
 

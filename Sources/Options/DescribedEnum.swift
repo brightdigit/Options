@@ -1,5 +1,5 @@
 public struct DescribedEnum<EnumType: StringRepresentable>: Codable {
-  let value: EnumType
+  public let value: EnumType
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
