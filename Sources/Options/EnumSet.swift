@@ -1,27 +1,23 @@
-
-
-
-public struct EnumSet<EnumType : RawRepresentable> : OptionSet where EnumType.RawValue == Int {
-  
+public struct EnumSet<EnumType: RawRepresentable>: OptionSet where EnumType.RawValue == Int {
   public let rawValue: Int
   public typealias RawValue = EnumType.RawValue
- 
+
   public init(rawValue: Int) {
     self.rawValue = rawValue
   }
-  
+
   static func cumulativeValue(basedOnRawValues rawValues: [Int]) -> Int {
-    rawValues.map{ 1 << $0 }.reduce(0, |)
+    rawValues.map { 1 << $0 }.reduce(0, |)
   }
-  
+
   public init(values: [EnumType]) {
-    self.rawValue = Self.cumulativeValue(basedOnRawValues: values.map{$0.rawValue})
+    rawValue = Self.cumulativeValue(basedOnRawValues: values.map { $0.rawValue })
   }
 }
 
-extension EnumSet : Codable where EnumType : StringRepresentable {
+extension EnumSet: Codable where EnumType: StringRepresentable {
   static func enums(basedOnRawValue rawValue: Int) -> [EnumType] {
-    let cases = EnumType.allCases.sorted{ $0.rawValue < $1.rawValue}
+    let cases = EnumType.allCases.sorted { $0.rawValue < $1.rawValue }
     var values = [EnumType]()
     var current = rawValue
     for item in cases {
@@ -35,21 +31,20 @@ extension EnumSet : Codable where EnumType : StringRepresentable {
     }
     return values
   }
+
   public func encode(to encoder: Encoder) throws {
     var container = encoder.singleValueContainer()
-    let values = Self.enums(basedOnRawValue: self.rawValue)
+    let values = Self.enums(basedOnRawValue: rawValue)
     let strings = try values
-      .map{$0.rawValue}
+      .map { $0.rawValue }
       .map(EnumType.string(basedOn:))
     try container.encode(strings)
   }
-  
+
   public init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
     let strings = try container.decode([String].self)
     let rawValues = try strings.map(EnumType.rawValue(basedOn:))
-    self.rawValue = Self.cumulativeValue(basedOnRawValues: rawValues)
-    
+    rawValue = Self.cumulativeValue(basedOnRawValues: rawValues)
   }
 }
-
