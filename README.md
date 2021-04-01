@@ -1,6 +1,6 @@
 
 <p align="center">
-    <img alt="Options" title="Options" src="logo.svg" height="200">
+    <img alt="Options" title="Options" src="logo.png" height="200">
 </p>
 <h1 align="center"> Options </h1>
 
@@ -14,8 +14,8 @@ Swift Package for more powerful `Enum` types.
 [![macOS](https://github.com/brightdigit/Options/workflows/macOS/badge.svg)](https://github.com/brightdigit/Options/actions?query=workflow%3AmacOS)
 [![ubuntu](https://github.com/brightdigit/Options/workflows/ubuntu/badge.svg)](https://github.com/brightdigit/Options/actions?query=workflow%3Aubuntu)
 [![Travis (.com)](https://img.shields.io/travis/com/brightdigit/Options?logo=travis&?label=travis-ci)](https://travis-ci.com/brightdigit/Options)
-[![Bitrise](https://img.shields.io/bitrise/b2595eab70c25d1b?logo=bitrise&?label=bitrise&token=rHUhEUFkU2RUL-KGmrKX1Q)](https://app.bitrise.io/app/b2595eab70c25d1b)
-[![CircleCI](https://img.shields.io/circleci/build/github/brightdigit/Options?logo=circleci&?label=circle-ci&token=45c9ff6a86f9ac6c1ec8c85c3bc02f4d8859aa6b)](https://app.circleci.com/pipelines/github/brightdigit/Options)
+[![Bitrise](https://img.shields.io/bitrise/1c35b4466fb0a529?logo=bitrise&?label=bitrise&token=ryjPpLP4dkC5v-RV1fzKaw)](https://app.bitrise.io/app/1c35b4466fb0a529)
+[![CircleCI](https://img.shields.io/circleci/build/github/brightdigit/Options?logo=circleci&?label=circle-ci&token=a7ad8ba0bfc08f6c9c0ce786ac9c1ddfac871993)](https://app.circleci.com/pipelines/github/brightdigit/Options)
 
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbrightdigit%2FOptions%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/brightdigit/Options)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbrightdigit%2FOptions%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/brightdigit/Options)
