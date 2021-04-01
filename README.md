@@ -36,13 +36,12 @@ Swift Package for more powerful `Enum` types.
    * [**Features**](#features)
    * [**Installation**](#installation)
    * [**Usage**](#usage)
-      * [Setting up a MappedValueRepresentable Enum](#composing-web-service-requests)
-      * [Using MappedValueCollectionRepresented](#fetching-records-using-a-query-recordsquery)
-      * [Codable Enums using a MappedEnum Type](#fetching-records-by-record-name-recordslookup)
-      * [Using Enums in OptionSets with EnumSet](#fetching-current-user-identity-userscaller)
-      * [Converting EnumSet to Enum Array](#modifying-records-recordsmodify)
-      * [Codable EnumSet using a MappedEnum Type](#using-swiftnio)
-      * [Examples](#examples)
+      * [Setting up a **`MappedValueRepresentable`** Enum](#setting-up-a-mappedvaluerepresentable-enum)
+      * [Using **`MappedValueCollectionRepresented`**](#using-mappedvaluecollectionrepresented)
+      * [Codable Enums using a **`MappedEnum`** Type](#codable-enums-using-a-mappedenum-type)
+      * [Using Enums in OptionSets with **`EnumSet`**](#using-enums-in-optionsets-with-enumset)
+      * [Converting **`EnumSet`** to Enum Array](#converting-enumset-to-enum-array)
+      * [Codable **`EnumSet`** using a **`MappedValueRepresentable`** Enum](#codable-enumset-using-a-mappedvaluerepresentable-enum)
       * [Further Code Documentation](#further-code-documentation)
    * [**License**](#license)
 
@@ -95,7 +94,7 @@ enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented {
 
 typealias ContinuousIntegrationSystemSet = EnumSet<ContinuousIntegrationSystem>
 
-let set = ContinuousIntegrationSystemSet([.travisci, .github])
+let systems = ContinuousIntegrationSystemSet([.travisci, .github])
 ```
 
 # Installation
@@ -121,7 +120,7 @@ let package = Package(
 
 # Usage 
 
-## Setting up a MappedValueRepresentable Enum
+## Setting up a [MappedValueRepresentable](/Documentation/Reference/Options/protocols/MappedValueRepresentable.md) Enum
 
 So let's say we our `enum`:
 
@@ -168,11 +167,11 @@ enum ContinuousIntegrationSystem: Int, MappedValueRepresentable {
 }
 ```
 
-This can be simplified further by using `MappedValueCollectionRepresented`.
+This can be simplified further by using [`MappedValueCollectionRepresented`](/Documentation/Reference/Options/protocols/MappedValueCollectionRepresented.md).
 
-## Using MappedValueCollectionRepresented
+## Using [MappedValueCollectionRepresented]((/Documentation/Reference/Options/protocols/MappedValueCollectionRepresented.md)
 
-By using `MappedValueCollectionRepresented`, you can simplify implementing `MappedValueRepresentable`:
+By using `MappedValueCollectionRepresented`, you can simplify implementing [`MappedValueRepresentable`](/Documentation/Reference/Options/protocols/MappedValueRepresentable.md):
 
 ```swift
 enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented {
@@ -190,13 +189,13 @@ enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented {
 }
 ```
 
-Now we we've made it simplifies implementing `MappedValueRepresentable` so let's look how to use it with `Codable`.
+Now we we've made it simplifies implementing [`MappedValueRepresentable`](/Documentation/Reference/Options/protocols/MappedValueRepresentable.md) so let's look how to use it with `Codable`.
 
-## Codable Enums using a MappedEnum Type
+## Codable Enums using a [MappedEnum](/Documentation/Reference/Options/structs/MappedEnum.md) Type
 
 So you've setup a `MappedValueRepresentable` `enum`, the next part is having the `MappedType` which in this case is `String` the part that's used in `Codable`.
 
-This is where `MappedEnum` is used:
+This is where [`MappedEnum`](/Documentation/Reference/Options/structs/MappedEnum.md) is used:
 
 ```swift
 struct BuildSetup : Codable {
@@ -214,11 +213,73 @@ Now if the `String` can be used in encoding and decoding the value rather than t
 
 Next, let's take a look how we could use `ContinuousIntegrationSystem` in an `OptionSet`.
 
-## Using Enums in OptionSets with EnumSet
+## Using Enums in OptionSets with [EnumSet](/Documentation/Reference/Options/structs/EnumSet.md)
+
+[`EnumSet`](/Documentation/Reference/Options/structs/EnumSet.md) allows you to interchangeably use `Enum` with an `OptionSet`. [`EnumSet`](/Documentation/Reference/Options/structs/EnumSet.md) is a Generic `struct` while takes any `Enum` type with a `RawType`. So we can create an `OptionSet` instance which uses out `ContinuousIntegrationSystem`:
+
+```swift
+let systems = EnumSet<ContinuousIntegrationSystem>([.travisci, .github]) 
+```
 
 ## Converting EnumSet to Enum Array
 
-## Codable EnumSet using a MappedEnum Type
+If your `Enum` implements `CaseIterable`, then you can extract the individual `ContinuousIntegrationSystem` enum values with `.array()`:
+
+```swift
+enum ContinuousIntegrationSystem: Int, CaseIterable {
+  case github
+  case travisci
+  case circleci
+  case bitrise
+}
+
+let systems = EnumSet<ContinuousIntegrationSystem>([.travisci, .github]) 
+
+print(systems.array())
+```
+
+Lastly, let's put all this together.
+
+## Codable EnumSet using a MappedValueRepresentable Enum
+
+If your `enum` implements `MappedValueRepresentable` and you use it in an [`EnumSet`](/Documentation/Reference/Options/structs/EnumSet.md), then you can allow for your `OptionSet` to be `Codable` as an `Array` of values rather than the cumulative `rawValue`:
+
+```swift
+enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented, CaseIterable {
+case github
+case travisci
+case circleci
+case bitrise
+
+static let mappedValues = [
+  "github",
+  "travisci",
+  "circleci",
+  "bitrise"
+]
+}
+
+
+struct BuildSetup : Codable {
+  let systems: EnumSet<ContinuousIntegrationSystem>
+}
+
+let systems = BuildSetup(systems: EnumSet<ContinuousIntegrationSystem>(values: [.travisci, .github]))
+```
+
+For our `systems` variable, our `Codable` data would be:
+
+```json
+{
+  "systems" : ["travisci", "github"]
+}
+```
+
+This will make it easier for making our data human-readable instead of using the `rawValue` of `3`.
+
+# Further Code Documentation
+
+[Documentation Here](/Documentation/Reference/Options/README.md)
 
 # License 
 
