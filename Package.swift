@@ -18,12 +18,12 @@ let package = Package(
   dependencies: [
     // Dependencies declare other packages that this package depends on.
     // .package(url: /* package url */, from: "1.0.0")
-//    .package(url: "https://github.com/shibapm/Komondor", from: "1.0.6"), // dev
-//    .package(url: "https://github.com/eneko/SourceDocs", from: "1.2.1"), // dev
-//    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.47.0"), // dev
-//    .package(url: "https://github.com/realm/SwiftLint", from: "0.41.0"), // dev
-//    .package(url: "https://github.com/shibapm/Rocket", .branch("master")), // dev
-//    .package(url: "https://github.com/mattpolzin/swift-test-codecov", .branch("master")) // dev
+    .package(url: "https://github.com/shibapm/Komondor", from: "1.0.6"), // dev
+    .package(url: "https://github.com/eneko/SourceDocs", from: "1.2.1"), // dev
+    .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.47.0"), // dev
+    .package(url: "https://github.com/realm/SwiftLint", from: "0.41.0"), // dev
+    .package(url: "https://github.com/shibapm/Rocket", .branch("master")), // dev
+    .package(url: "https://github.com/mattpolzin/swift-test-codecov", .branch("master")) // dev
   ],
   targets: [
     .target(
