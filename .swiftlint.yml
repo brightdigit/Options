@@ -38,7 +38,6 @@ opt_in_rules:
   - identical_operands
   - implicit_return
   - implicitly_unwrapped_optional
-  - indentation_width
   - joined_default_parameter
   - last_where
   - legacy_multiple
@@ -114,10 +113,9 @@ identifier_name:
   excluded:
     - id
 excluded:
-  - Tests/*/XCTestManifests.swift
-  - Tests/MistKitTests/XCTestManifests.swift
+  - Tests/**/XCTestManifests.swift
+  - Tests/LinuxMain.swift
   - DerivedData
   - .build
-  - Tests/LinuxMain.swift
 indentation_width:
   indentation_width: 2
