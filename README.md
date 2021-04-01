@@ -29,8 +29,6 @@ Swift Package for more powerful `Enum` types.
 [![Code Climate issues](https://img.shields.io/codeclimate/issues/brightdigit/Options)](https://codeclimate.com/github/brightdigit/Options)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
-![Demonstration of Options via Command-Line App `mistdemoc`](Assets/OptionsDemo.gif)
-
 
 # Table of Contents
 
@@ -39,7 +37,7 @@ Swift Package for more powerful `Enum` types.
    * [**Installation**](#installation)
    * [**Usage**](#usage)
       * [Setting up a MappedValueRepresentable Enum](#composing-web-service-requests)
-      * [Using MappedValueCollectionRepresented)](#fetching-records-using-a-query-recordsquery)
+      * [Using MappedValueCollectionRepresented](#fetching-records-using-a-query-recordsquery)
       * [Codable Enums using a MappedEnum Type](#fetching-records-by-record-name-recordslookup)
       * [Using Enums in OptionSets with EnumSet](#fetching-current-user-identity-userscaller)
       * [Converting EnumSet to Enum Array](#modifying-records-recordsmodify)
@@ -50,86 +48,55 @@ Swift Package for more powerful `Enum` types.
 
 # Introduction
 
-Rather than the CloudKit framework this Swift package uses [CloudKit Web Services.](https://developer.apple.com/library/archive/documentation/DataManagement/Conceptual/CloudKitWebServicesReference/index.html#//apple_ref/doc/uid/TP40015240-CH41-SW1). Why?
+**Options** provides a features to `Enum` and `OptionSet` types such as:
 
-* Building a **Command Line Application**
-* Use on **Linux** (or any other non-Apple OS)
-* Required for **Server-Side Integration (via Vapor)**
-* Access via **AWS Lambda**
-* **Migrating Data from/to CloudKit**
+* Providing additional value types besides the `RawType rawValue` 
+* Being able to interchange between `Enum` and `OptionSet` types
+* Using an additional value type for a `Codable` `OptionSet`
 
-... and more
+## Example
 
-In my case, I was using this for **the Vapor back-end for my Apple Watch app [Heartwitch](https://heartwitch.app)**. Here's some example code showing how to setup and use **Options** with CloudKit container.
-
-### Demo Example
-
-#### CloudKit Dashboard Schema
-
-![Sample Schema for Todo List](Assets/CloudKitDB-Demo-Schema.jpg)
-
-#### Sample Code using **Options**
+Let's say you have `Enum` type:
 
 ```swift
-// Example for pulling a todo list from CloudKit
-import Options
-import OptionsNIOHTTP1Token
-
-// setup your connection to CloudKit
-let connection = MKDatabaseConnection(
-  container: "iCloud.com.brightdigit.MistDemo", 
-  apiToken: "****", 
-  environment: .development
-)
-
-// setup how to manager your user's web authentication token 
-let manager = MKTokenManager(storage: MKUserDefaultsStorage(), client: MKNIOHTTP1TokenClient())
-
-// setup your database manager
-let database = MKDatabase(
-  connection: connection,
-  tokenManager: manager
-)
-
-// create your request to CloudKit
-let query = MKQuery(recordType: TodoListItem.self)
-
-let request = FetchRecordQueryRequest(
-  database: .private, 
-  query: FetchRecordQuery(query: query))
-
-// handle the result
-database.query(request) { result in
-  dump(result)
+enum ContinuousIntegrationSystem {
+  case github
+  case travisci
+  case circleci
+  case bitrise
 }
-
-// wait for query here...
 ```
 
-To wait for the CloudKit query to complete synchronously, you can use [CFRunLoop](https://developer.apple.com/documentation/corefoundation/cfrunloop-rht):
+We want two things:
 
-```swift
-...
-// handle the result
-database.query(request) { result in
-  dump(result)
+* Use it as an `OptionSet` so we can store multiple CI sytems
+* Store and parse it via a `String`
 
-  // nessecary if you need run this synchronously
-  CFRunLoopStop(CFRunLoopGetMain())
+If `OptionSet` requires an `Int` `RawType`, how can we parse and store as `String`?
+
+With **Options** we can enable `ContinuousIntegrationSystem` to do both:
+
+```swift 
+enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented {
+  case github
+  case travisci
+  case circleci
+  case bitrise
+  
+  typealias MappedType = String
+  
+  static let mappedValues = [
+    "github",
+    "travisci",
+    "circleci",
+    "bitrise"
+  ]
 }
 
-// nessecary if you need run this synchronously
-CFRunLoopRun()
+typealias ContinuousIntegrationSystemSet = EnumSet<ContinuousIntegrationSystem>
+
+let set = ContinuousIntegrationSystemSet([.travisci, .github])
 ```
-# Features 
-
-Here's what's currently implemented with this library:
-
-- [x] Composing Web Service Requests
-- [x] Modifying Records (records/modify)
-- [x] Fetching Records Using a Query (records/query)
-- [x] Fetching Records by Record Name (records/lookup)
-- [x] Fetching Current User Identity (users/caller)
 
 # Installation
 
@@ -141,7 +108,7 @@ To integrate **Options** into your project using SPM, specify it in your Package
 let package = Package(
   ...
   dependencies: [
-    .package(url: "https://github.com/brightdigit/Options", from: "0.2.0")
+    .package(url: "https://github.com/brightdigit/Options", from: "0.1.0")
   ],
   targets: [
       .target(
@@ -152,658 +119,106 @@ let package = Package(
 )
 ```
 
-There are also products for SwiftNIO as well as Vapor if you are building server-side implmentation:
-
-```swift      
-      .target(
-          name: "YourTarget",
-          dependencies: ["Options", 
-            .product(name: "OptionsNIO", package: "Options"),  // if you are building a server-side application
-            .product(name: "OptionsVapor", package: "Options") // if you are building a Vapor application
-            ...]
-      ),
-```
-
 # Usage 
 
-## Composing Web Service Requests
+## Setting up a MappedValueRepresentable Enum
 
-**Options** requires a connection be setup with the following properties:
-
-* `container` name in the format of `iCloud.com.*.*` such as `iCloud.com.brightdigit.MistDemo`
-* `apiToken` which can be [created through the CloudKit Dashboard](https://developer.apple.com/library/archive/documentation/DataManagement/Conceptual/CloudKitWebServicesReference/SettingUpWebServices.html#//apple_ref/doc/uid/TP40015240-CH24-SW1)
-* `environment` which can be either `development` or `production`
-
-Here's an example of how to setup an `MKDatabase`:
+So let's say we our `enum`:
 
 ```swift
-let connection = MKDatabaseConnection(
-  container: options.container, 
-  apiToken: options.apiKey, 
-  environment: options.environment)
-
-// setup your database manager
-let database = MKDatabase(
-  connection: connection,
-  tokenManager: manager
-)
+enum ContinuousIntegrationSystem: Int {
+  case github
+  case travisci
+  case circleci
+  case bitrise
+}
 ```
 
-Before getting into make an actual request, you should probably know how to make authenticated request for `private` or `shared` databases.
+We want to be able to make it available as an `OptionSet` so it needs an `RawType` of `Int`. 
+However we want to decode and encode it via `Codable` as a `String`. 
 
-### Setting Up Authenticated Requests
-
-In order to have access to `private` or `shared` databases, the Cloud Web Services API require a web authentication token. In order for the Options to obtain this, an http server is setup to listen to the callback from CloudKit.
-
-Therefore when you setup your API token, make sure to setup a url for the Sign-In Callback:
-
-![CloudKit Dashboard](Assets/CloudKitDB-APIToken.png)
-
-Once that's setup, you can setup a `MKTokenManager`.
-
-![CloudKit Dashboard Callback](Assets/CloudKitDB-APIToken-Callback.png)
-
-#### Managing Web Authentication Tokens
-
-`MKTokenManager` requires a `MKTokenStorage` for storing the token for later.
-There are a few implementations you can use:
-  * `MKFileStorage` stores the token as a simple text file
-  * `MKUserDefaultsStorage` stores the token using `UserDefaults`
-  * `MKVaporModelStorage` stores the token in a database `Model` object via `Fluent`
-  * `MKVaporSessionStorage` stores the token the Vapor `Session` data
-
-Optionally **Options** can setup a web server for you if needed to listen to web authentication via a `MKTokenClient`:
-There are a few implementations you can use:
-  * `MKNIOHTTP1TokenClient` sets up an http server using SwiftNIO
-
-Here's an example of how you `MKDatabase`:
+**Options** has a protocol `MappedValueRepresentable` which allows to do that by implementing it.
 
 ```swift
-let connection = MKDatabaseConnection(
-  container: options.container, 
-  apiToken: options.apiKey, 
-  environment: options.environment
- )
-
-// setup how to manager your user's web authentication token
-let manager = MKTokenManager(
-  // store the token in UserDefaults
-  storage: MKUserDefaultsStorage(), 
-  // setup an http server at localhost for port 7000
-  client: MKNIOHTTP1TokenClient(bindTo: .ipAddress(host: "127.0.0.1", port: 7000))
-)
-
-// setup your database manager
-let database = MKDatabase(
-  connection: connection,
-  tokenManager: manager
-)
-```
-
-##### Using `MKNIOHTTP1TokenClient`
-
-If you are not building a server-side application, you can use `MKNIOHTTP1TokenClient`, by adding `OptionsNIO` to your package dependency:
-
-```swift
-let package = Package(
-  ...
-  dependencies: [
-    .package(url: "https://github.com/brightdigit/Options", .branch("main")
-  ],
-  targets: [
-      .target(
-          name: "YourTarget",
-          dependencies: ["Options", "OptionsNIOHTTP1Token", ...]),
-      ...
-  ]
-)
-```
-
-When a request fails due to authentication failure, `MKNIOHTTP1TokenClient` will start an http server to begin listening to web authentication token. By default, `MKNIOHTTP1TokenClient` will simply print the url but you can override the `onRequestURL`:
-
-```swift
-public class MKNIOHTTP1TokenClient: MKTokenClient {
+enum ContinuousIntegrationSystem: Int, MappedValueRepresentable {
+  case github
+  case travisci
+  case circleci
+  case bitrise
   
-  public init(bindTo: BindTo, onRedirectURL : ((URL) -> Void)? = nil) {
-    self.bindTo = bindTo
-    self.onRedirectURL = onRedirectURL ?? {print($0)}
-  }
-  ...
-}
-```
-
-### CloudKit and Vapor
-
-#### Static Web Authentication Tokens
-
-If you may already have a `webAuthenticationToken`, you can use `MKStaticTokenManager`. This is a read-only implementation of `MKTokenManagerProtocol` which takes a read-only `String?` for the `webAuthenticationToken`.
-
-Here's some sample code I use in my Vapor app **[Heartwitch](https://heartwitch.app)** for pulling the `webAuthenticationToken` from my database and using that token when I create a `MKDatabase` instance.
-
-```swift
-import Options
-import OptionsVapor
-
-extension Application {
-  ...
-  var cloudKitConnection: MKDatabaseConnection {
-    MKDatabaseConnection(
-      container: configuration.cloudkitContainer,
-      apiToken: configuration.cloudkitAPIKey,
-      environment: environment.cloudKitEnvironment
-    )
-  }
-
-  func cloudKitDatabase(using client: Client, withWebAuthenticationToken webAuthenticationToken: String? = nil) -> MKDatabase<MKVaporClient> {
-    MKDatabase(
-      connection: cloudKitConnection,
-      client: MKVaporClient(client: client),
-      tokenManager: MKStaticTokenManager(token: webAuthenticationToken, client: nil)
-    )
-  }
-}
-
-struct DeviceController {
-
-  func fetch(_ request: Request) throws -> EventLoopFuture<MKServerResponse<[DeviceResponseItem]>> {
-    let user = try request.auth.require(User.self)
-    let userID = try user.requireID()
-    let token = user.$appleUsers.query(on: request.db).field(\.$webAuthenticationToken).first().map { $0?.webAuthenticationToken }
-
-    let cloudKitDatabase: EventLoopFuture<MKDatabase> = token.map {
-      request.application.cloudKitDatabase(using: request.client, withWebAuthenticationToken: $0)
-    }
-    
-    let cloudKitRequest = FetchRecordQueryRequest(
-      database: .private,
-      query: FetchRecordQuery(query: query)
-    )
-    
-    let newEntries = cloudKitDatabase.flatMap {
-      let cloudKitResult = cloudKitDatabase.query(cloudKitRequest, on: request.eventLoop)
-    }
-
-    return newEntries.mistKitResponse()
-  }
-  
-  ...
-}
-```
-
-Besides static strings, you can store your tokens in the session or in your database.
-
-#### Storing Web Authentication Tokens in Databases and Sessions
-
-In the `mistdemod` demo Vapor application, there's an example of how to create an `MKDatabase` based on the request using both `MKVaporModelStorage` and `MKVaporSessionStorage`:
-
-```swift
-extension MKDatabase where HttpClient == MKVaporClient {
-  init(request: Request) {
-    let storage: MKTokenStorage
-    if let user = request.auth.get(User.self) {
-      storage = MKVaporModelStorage(model: user)
+  static func rawValue(basedOn string: String) throws -> Int {
+    if (string == "github") {
+      return 0
     } else {
-      storage = MKVaporSessionStorage(session: request.session)
+      ...
+    } else {
+      throw ...
     }
-    let manager = MKTokenManager(storage: storage, client: nil)
-
-    let options = MistDemoDefaultConfiguration(apiKey: request.application.cloudKitAPIKey)
-    let connection = MKDatabaseConnection(container: options.container, apiToken: options.apiKey, environment: options.environment)
-
-    // use the webAuthenticationToken which is passed
-    if let token = options.token {
-      manager.webAuthenticationToken = token
+  }
+  
+  static func mappedValue(basedOn rawValue: Int) throws -> String {
+    if (rawValue == 0) {
+      return "github"
+    } else {
+      ...
+    } else {
+      throw ...
     }
-
-    self.init(connection: connection, factory: nil, client: MKVaporClient(client: request.client), tokenManager: manager)
   }
 }
 ```
 
-In this case, for the `User` model needs to implement `MKModelStorable`.
+This can be simplified further by using `MappedValueCollectionRepresented`.
+
+## Using MappedValueCollectionRepresented
+
+By using `MappedValueCollectionRepresented`, you can simplify implementing `MappedValueRepresentable`:
 
 ```swift
-final class User: Model, Content {
-  ...
-
-  @Field(key: "cloudKitToken")
-  var cloudKitToken: String?
-}
-
-extension User: MKModelStorable {
-  static var tokenKey: KeyPath<User, Field<String?>> = \User.$cloudKitToken
-}
-```
-
-The `MKModelStorable` protocol ensures that the `Model` contains the properties needed for storing the web authentication token.
-
-While the command line tool needs a `MKTokenClient` to listen for the callback from CloudKit, with a server-side application you can just add a API call. Here's an example which listens for the `ckWebAuthToken` and saves it to the `User`:
-
-```swift
-struct CloudKitController: RouteCollection {
-  func token(_ request: Request) -> EventLoopFuture<HTTPStatus> {
-    guard let token: String = request.query["ckWebAuthToken"] else {
-      return request.eventLoop.makeSucceededFuture(.notFound)
-    }
-
-    guard let user = request.auth.get(User.self) else {
-      request.cloudKitAPI.webAuthenticationToken = token
-      return request.eventLoop.makeSucceededFuture(.accepted)
-    }
-
-    user.cloudKitToken = token
-    return user.save(on: request.db).transform(to: .accepted)
-  }
-
-  func boot(routes: RoutesBuilder) throws {
-    routes.get(["token"], use: token)
-  }
-}
-```
-
-If you have an app which already uses Apple's existing CloudKit API, you can also [save the webAuthenticationToken to your database with a `CKFetchWebAuthTokenOperation`](https://developer.apple.com/documentation/cloudkit/ckfetchwebauthtokenoperation).
-
-## Fetching Records Using a Query (records/query)
-
-There are two ways to fetch records:
-
-* using an `MKAnyQuery` to fetch `MKAnyRecord` items
-* using a custom type which implements `MKQueryRecord`
-
-### Setting Up Queries
-
-To fetch as `MKAnyRecord`, simply create `MKAnyQuery` with the matching `recordType` (i.e. schema name). 
-
-```swift
-// create your request to CloudKit
-let query = MKAnyQuery(recordType: "TodoListItem")
-
-let request = FetchRecordQueryRequest(
-  database: .private,
-  query: FetchRecordQuery(query: query)
-)
-
-// handle the result
-database.perform(request: request) { result in
-  do {
-    try print(result.get().records.information)
-  } catch {
-    completed(error)
-    return
-  }
-  completed(nil)
-}
-```
-
-This will give you `MKAnyRecord` items which contain a `fields` property with your values:
-
-```swift
-public struct MKAnyRecord: Codable {
-  public let recordType: String
-  public let recordName: UUID?
-  public let recordChangeTag: String?
-  public let fields: [String: MKValue]
-  ...
-```
-
-The `MKValue` type is an enum which contains the type and value of the field.
-
-### Strong-Typed Queries
-
-In order to use a custom type for requests, you need to implement `MKQueryRecord`. Here's an example of a todo item which contains a title property:
-
-```swift
-public class TodoListItem: MKQueryRecord {
-  // required property and methods for MKQueryRecord
-  public static var recordType: String = "TodoItem"
-  public static var desiredKeys: [String]? = ["title"]
-
-  public let recordName: UUID?
-  public let recordChangeTag: String?
+enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented {
+  case github
+  case travisci
+  case circleci
+  case bitrise
   
-  public required init(record: MKAnyRecord) throws {
-    recordName = record.recordName
-    recordChangeTag = record.recordChangeTag
-    title = try record.string(fromKey: "title")
-  }
-  
-  public var fields: [String: MKValue] {
-    return ["title": .string(title)]
-  }
-  
-  // custom fields and methods to `TodoListItem`
-  public var title: String
-  
-  public init(title: String) {
-    self.title = title
-    recordName = nil
-    recordChangeTag = nil
-  }
+  static let mappedValues = [
+    "github",
+    "travisci",
+    "circleci",
+    "bitrise"
+  ]
 }
 ```
 
-Now you can create an `MKQuery` using your custom type.
+Now we we've made it simplifies implementing `MappedValueRepresentable` so let's look how to use it with `Codable`.
+
+## Codable Enums using a MappedEnum Type
+
+So you've setup a `MappedValueRepresentable` `enum`, the next part is having the `MappedType` which in this case is `String` the part that's used in `Codable`.
+
+This is where `MappedEnum` is used:
 
 ```swift
-// create your request to CloudKit
-let query = MKQuery(recordType: TodoListItem.self)
-
-let request = FetchRecordQueryRequest(
-  database: .private,
-  query: FetchRecordQuery(query: query)
-)
-
-// handle the result
-database.query(request) { result in
-  do {
-    try print(result.get().information)
-  } catch {
-    completed(error)
-    return
-  }
-  completed(nil)
+struct BuildSetup : Codable {
+  let ci: MappedEnum<ContinuousIntegrationSystem>
 }
 ```
 
-Rather than using `MKDatabase.perform(request:)`, use `MKDatabase.query(_ query:)` and `MKDatabase` will decode the value to your custom type.
+Now if the `String` can be used in encoding and decoding the value rather than the `RawType` `Int`:
 
-### Filters 
-
-_Coming Soon_
-
-## Fetching Records by Record Name (records/lookup)
-
-```swift
-let recordNames : [UUID] = [...]
-
-let query = LookupRecordQuery(TodoListItem.self, recordNames: recordNames)
-
-let request = LookupRecordQueryRequest(database: .private, query: query)
-
-database.lookup(request) { result in
-  try? print(result.get().count)
+```json
+{
+  "ci" : "github"
 }
 ```
 
-_Coming Soon_
+Next, let's take a look how we could use `ContinuousIntegrationSystem` in an `OptionSet`.
 
-## Fetching Current User Identity (users/caller)
+## Using Enums in OptionSets with EnumSet
 
-```swift
-let request = GetCurrentUserIdentityRequest()
-database.perform(request: request) { (result) in
-  try? print(result.get().userRecordName)
-}
-```
+## Converting EnumSet to Enum Array
 
-_Coming Soon_
-
-## Modifying Records (records/modify)
-
-### Creating Records
-
-```swift
-let item = TodoListItem(title: title)
-
-let operation = ModifyOperation(operationType: .create, record: item)
-
-let query = ModifyRecordQuery(operations: [operation])
-
-let request = ModifyRecordQueryRequest(database: .private, query: query)
-
-database.perform(operations: request) { result in
-  do {
-    try print(result.get().updated.information)
-  } catch {
-    completed(error)
-    return
-  }
-  completed(nil)
-}
-```
-
-### Deleting Records
-
-In order to delete and update records, you are required to already have the object fetched from CloudKit. Therefore you'll need to run a `LookupRecordQueryRequest` or `FetchRecordQueryRequest` to get access to the record. Once you have access to the records, simply create a delete operation with your record:
-
-```swift
-let query = LookupRecordQuery(TodoListItem.self, recordNames: recordNames)
-
-let request = LookupRecordQueryRequest(database: .private, query: query)
-
-database.lookup(request) { result in
-  let items: [TodoListItem]
-  
-  do {
-    items = try result.get()
-  } catch {
-    completed(error)
-    return
-  }
-  
-  let operations = items.map { (item) in
-    ModifyOperation(operationType: .delete, record: item)
-  }
-
-  let query = ModifyRecordQuery(operations: operations)
-
-  let request = ModifyRecordQueryRequest(database: .private, query: query)
-  
-  database.perform(operations: request) { result in
-    do {
-      try print("Deleted \(result.get().deleted.count) items.")
-    } catch {
-      completed(error)
-      return
-    }
-    completed(nil)
-  }
-}
-```
-
-### Updating Records
-
-Similarly with updating records, you are required to already have the object fetched from CloudKit. Again, run a `LookupRecordQueryRequest` or `FetchRecordQueryRequest` to get access to the record. Once you have access to the records, simply create a update operation with your record:
-
-```swift
-let query = LookupRecordQuery(TodoListItem.self, recordNames: [recordName])
-
-let request = LookupRecordQueryRequest(database: .private, query: query)
-
-database.lookup(request) { result in
-  let items: [TodoListItem]
-  do {
-    items = try result.get()
-
-  } catch {
-    completed(error)
-    return
-  }
-  let operations = items.map { (item) -> ModifyOperation<TodoListItem> in
-    item.title = self.newTitle
-    return ModifyOperation(operationType: .update, record: item)
-  }
-
-  let query = ModifyRecordQuery(operations: operations)
-
-  let request = ModifyRecordQueryRequest(database: .private, query: query)
-  database.perform(operations: request) { result in
-    do {
-      try print("Updated \(result.get().updated.count) items.")
-    } catch {
-      completed(error)
-      return
-    }
-    completed(nil)
-  }
-}
-```
-
-## Using SwiftNIO
-
-If you are building a server-side application and already using [SwiftNIO](https://github.com/apple/swift-nio), you might want to take advantage of some helpers which will work already existing patterns and APIs available. Primarily **[EventLoops](https://apple.github.io/swift-nio/docs/current/NIO/Protocols/EventLoop.html)** from [SwiftNIO](https://github.com/apple/swift-nio) and the respective **HTTP clients** from [SwiftNIO](https://github.com/apple/swift-nio) and [Vapor](https://vapor.codes/).
-
-### Using EventLoops
-
-If you are building a server-side application in [SwiftNIO](https://github.com/apple/swift-nio) (or [Vapor](https://vapor.codes/)), you are likely using [EventLoops](https://apple.github.io/swift-nio/docs/current/NIO/Protocols/EventLoop.html) and [EventLoopFuture](https://apple.github.io/swift-nio/docs/current/NIO/Classes/EventLoopFuture.html) for asyncronous programming. EventLoopFutures are essentially the Future/Promise implementation of [SwiftNIO](https://github.com/apple/swift-nio). Luckily there are helper methods in Options which provide [EventLoopFutures](https://apple.github.io/swift-nio/docs/current/NIO/Classes/EventLoopFuture.html) similar to the way they implmented in [SwiftNIO](https://github.com/apple/swift-nio). These implementations augment the already existing callback:
-
-
-```swift
-public extension MKDatabase {
-  func query<RecordType>(
-    _ query: FetchRecordQueryRequest<MKQuery<RecordType>>,
-    on eventLoop: EventLoop
-  ) -> EventLoopFuture<[RecordType]>
-
-  func perform<RecordType>(
-    operations: ModifyRecordQueryRequest<RecordType>,
-    on eventLoop: EventLoop
-  ) -> EventLoopFuture<ModifiedRecordQueryResult<RecordType>>
-  
-  func lookup<RecordType>(
-    _ lookup: LookupRecordQueryRequest<RecordType>,
-    on eventLoop: EventLoop
-  ) -> EventLoopFuture<[RecordType]>
-
-  func perform<RequestType: MKRequest, ResponseType>(
-    request: RequestType,
-    on eventLoop: EventLoop
-  ) -> EventLoopFuture<ResponseType> -> EventLoopFuture<ResponseType>
-    where RequestType.Response == ResponseType
-}
-```
-
-Also if you are using the results as `Content` for a [Vapor](https://vapor.codes/) HTTP response, **Options** provides a `MKServerResponse` enum type which distinguishes between an authentication failure (with the redirect URL) and an actual success. 
-
-```swift
-public enum MKServerResponse<Success>: Codable where Success: Codable {
-  public init(attemptRecoveryFrom error: Error) throws
-
-  case failure(URL)
-  case success(Success)
-}
-```
-
-Besides [EventLoopFuture](https://apple.github.io/swift-nio/docs/current/NIO/Classes/EventLoopFuture.html), you can also use a different HTTP client for calling CloudKit Web Services.  
-
-### Choosing an HTTP Client
-
-By default, Options uses `URLSession` for making HTTP calls to the CloudKit Web Service via the `MKURLSessionClient`:
-
-```swift
-public struct MKURLSessionClient: MKHttpClient {
-  public init(session: URLSession) {
-    self.session = session
-  }
-
-  public func request(withURL url: URL, data: Data?) -> MKURLRequest
-}
-```
-
-However if you are using [SwiftNIO](https://github.com/apple/swift-nio) or [Vapor](https://vapor.codes/), it makes more sense the use their HTTP clients for making those calls:
-* For **SwiftNIO**, there's **`MKAsyncClient`** which uses an `HTTPClient` provided by the `AsyncHTTPClient` library
-* For **Vapor**, there's **`MKVaporClient`** which uses an `Client` provided by the `Vapor` library
-
-In the mistdemod example, you can see how to use a Vapor `Request` to create an `MKDatabase` with the `client` property of the `Request`:
-
-```swift
-extension MKDatabase where HttpClient == MKVaporClient {
-  init(request: Request) {
-    let manager: MKTokenManager    
-    let connection : MKDatabaseConnection
-    self.init(
-      connection: connection, 
-      factory: nil, 
-      client: MKVaporClient(client: request.client), 
-      tokenManager: manager
-    )
-  }
-}
-```
-
-## Examples
-
-There are two examples on how to do basic CRUD methods in CloudKit via Options: 
-* As a command line tool using Swift Argument Parser checkout [the `mistdemoc` Swift package executable here](https://github.com/brightdigit/Options/tree/main/Sources/mistdemoc)
-* And a server-side Vapor application [`mistdemod` here](https://github.com/brightdigit/Options/tree/main/Sources/mistdemoc)
-
-## Further Code Documentation
-
-[Documentation Here](/Documentation/Reference/README.md)
-
-# Roadmap
-
-<!-- https://developer.apple.com/library/archive/documentation/DataManagement/Conceptual/CloudKitWebServicesReference/index.html#//apple_ref/doc/uid/TP40015240-CH41-SW1 -->
-
-## 0.1.0
-
-- [x] Composing Web Service Requests
-- [x] Modifying Records (records/modify)
-- [x] Fetching Records Using a Query (records/query)
-- [x] Fetching Records by Record Name (records/lookup)
-- [x] Fetching Current User Identity (users/caller)
-
-## 0.2.0 
-
-- [x] Vapor Token Client
-- [x] Vapor Token Storage
-- [x] Vapor URL Client
-- [x] Swift NIO URL Client
-
-## 0.4.0 
-
-- [X] Date Field Types
-- [X] Location Field Types
-- [ ] List Field Types
-- [ ] System Field Integration
-
-## 0.6.0
-
-- [ ] Name Component Types
-- [ ] Discovering User Identities (POST users/discover)
-- [ ] Discovering All User Identities (GET users/discover)
-- [ ] Support `postMessage` for Authentication Requests
-
-## 0.8.0
-
-- [ ] Uploading Assets (assets/upload)
-- [ ] Referencing Existing Assets (assets/rereference)
-- [ ] Fetching Records Using a Query (records/query) w/ basic filtering
-
-## 0.9.0
-
-- [ ] Fetching Contacts (users/lookup/contacts)
-- [ ] Fetching Users by Email (users/lookup/email)
-- [ ] Fetching Users by Record Name (users/lookup/id)
-
-## v1.0.0
-
-- [ ] Reference Field Types
-- [ ] Error Codes
-- [ ] Handle Data Size Limits
-
-## v1.x.x+
-
-- [ ] Fetching Record Changes (records/changes)
-- [ ] Fetching Record Information (records/resolve)
-- [ ] Accepting Share Records (records/accept)
-- [ ] Fetching Zones (zones/list)
-- [ ] Fetching Zones by Identifier (zones/lookup)
-- [ ] Modifying Zones (zones/modify)
-- [ ] Fetching Database Changes (changes/database)
-- [ ] Fetching Record Zone Changes (changes/zone)
-- [ ] Fetching Zone Changes (zones/changes)
-- [ ] Fetching Subscriptions (subscriptions/list)
-- [ ] Fetching Subscriptions by Identifier (subscriptions/lookup)
-- [ ] Modifying Subscriptions (subscriptions/modify)
-- [ ] Creating APNs Tokens (tokens/create)
-- [ ] Registering Tokens (tokens/register)
-
-<!-- Explain Demo Application -->
-
-## Not Planned
-
-- [ ] Fetching Current User (users/current) _deprecated_
+## Codable EnumSet using a MappedEnum Type
 
 # License 
 
