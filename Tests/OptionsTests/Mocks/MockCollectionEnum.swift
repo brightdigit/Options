@@ -2,7 +2,7 @@ import Options
 
 // swiftlint:disable identifier_name
 
-internal enum MockEnum: Int, MappedValueCollectionRepresented {
+internal enum MockCollectionEnum: Int, MappedValueCollectionRepresented {
   case a
   case b
   case c

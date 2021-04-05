@@ -1,9 +1,9 @@
 **ENUM**
 
-# `MappedValueCollectionRepresentedError`
+# `MappedValueRepresentableError`
 
 ```swift
-public enum MappedValueCollectionRepresentedError: Error
+public enum MappedValueRepresentableError: Error
 ```
 
 An Error thrown when the `MappedType` value or `RawType` value

@@ -15,7 +15,7 @@ public extension MappedValueCollectionRepresented {
   ///   based on the index the MappedType value was found at.
   static func rawValue(basedOn value: MappedType) throws -> RawValue {
     guard let index = mappedValues.firstIndex(of: value) else {
-      throw MappedValueCollectionRepresentedError.valueNotFound
+      throw MappedValueRepresentableError.valueNotFound
     }
 
     return index
@@ -31,7 +31,7 @@ public extension MappedValueCollectionRepresented {
   ///   The Mapped Type value based on the value in the array at the raw value index.
   static func mappedValue(basedOn rawValue: RawValue) throws -> MappedType {
     guard rawValue < mappedValues.count, rawValue >= 0 else {
-      throw MappedValueCollectionRepresentedError.valueNotFound
+      throw MappedValueRepresentableError.valueNotFound
     }
     return Self.mappedValues[rawValue]
   }
