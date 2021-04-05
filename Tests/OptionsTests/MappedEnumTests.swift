@@ -8,9 +8,9 @@
       // swiftlint:disable:next force_unwrapping
       let data = Self.text.data(using: .utf8)!
       let decoder = JSONDecoder()
-      let actual: MappedEnum<MockEnum>
+      let actual: MappedEnum<MockCollectionEnum>
       do {
-        actual = try decoder.decode(MappedEnum<MockEnum>.self, from: data)
+        actual = try decoder.decode(MappedEnum<MockCollectionEnum>.self, from: data)
       } catch {
         XCTAssertNil(error)
         return
@@ -20,7 +20,7 @@
 
     internal func testEncoder() throws {
       let encoder = JSONEncoder()
-      let describedEnum: MappedEnum<MockEnum> = .init(value: .a)
+      let describedEnum: MappedEnum<MockCollectionEnum> = .init(value: .a)
       let data: Data
       do {
         data = try encoder.encode(describedEnum)

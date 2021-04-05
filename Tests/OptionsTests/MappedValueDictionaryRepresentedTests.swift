@@ -2,25 +2,25 @@
   @testable import Options
   import XCTest
 
-  internal final class MappedValueCollectionRepresentedTests: XCTestCase {
+  internal final class MappedValueDictionaryRepresentedTests: XCTestCase {
     internal func testRawValue() {
-      try XCTAssertEqual(MockCollectionEnum.rawValue(basedOn: "a"), 0)
-      try XCTAssertEqual(MockCollectionEnum.rawValue(basedOn: "b"), 1)
-      try XCTAssertEqual(MockCollectionEnum.rawValue(basedOn: "c"), 2)
-      try XCTAssertEqual(MockCollectionEnum.rawValue(basedOn: "d"), 3)
+      try XCTAssertEqual(MockDictionaryEnum.rawValue(basedOn: "a"), 2)
+      try XCTAssertEqual(MockDictionaryEnum.rawValue(basedOn: "b"), 5)
+      try XCTAssertEqual(MockDictionaryEnum.rawValue(basedOn: "c"), 6)
+      try XCTAssertEqual(MockDictionaryEnum.rawValue(basedOn: "d"), 12)
     }
 
     internal func testString() {
-      try XCTAssertEqual(MockCollectionEnum.mappedValue(basedOn: 0), "a")
-      try XCTAssertEqual(MockCollectionEnum.mappedValue(basedOn: 1), "b")
-      try XCTAssertEqual(MockCollectionEnum.mappedValue(basedOn: 2), "c")
-      try XCTAssertEqual(MockCollectionEnum.mappedValue(basedOn: 3), "d")
+      try XCTAssertEqual(MockDictionaryEnum.mappedValue(basedOn: 2), "a")
+      try XCTAssertEqual(MockDictionaryEnum.mappedValue(basedOn: 5), "b")
+      try XCTAssertEqual(MockDictionaryEnum.mappedValue(basedOn: 6), "c")
+      try XCTAssertEqual(MockDictionaryEnum.mappedValue(basedOn: 12), "d")
     }
 
     internal func testRawValueFailure() {
       let caughtError: MappedValueRepresentableError?
       do {
-        _ = try MockCollectionEnum.rawValue(basedOn: "e")
+        _ = try MockDictionaryEnum.rawValue(basedOn: "e")
         caughtError = nil
       } catch let error as MappedValueRepresentableError {
         caughtError = error
@@ -35,7 +35,7 @@
     internal func testStringFailure() {
       let caughtError: MappedValueRepresentableError?
       do {
-        _ = try MockCollectionEnum.mappedValue(basedOn: .max)
+        _ = try MockDictionaryEnum.mappedValue(basedOn: 0)
         caughtError = nil
       } catch let error as MappedValueRepresentableError {
         caughtError = error

@@ -3,6 +3,7 @@
 ## Protocols
 
 -   [MappedValueCollectionRepresented](protocols/MappedValueCollectionRepresented.md)
+-   [MappedValueDictionaryRepresented](protocols/MappedValueDictionaryRepresented.md)
 -   [MappedValueRepresentable](protocols/MappedValueRepresentable.md)
 
 ## Structs
@@ -12,12 +13,13 @@
 
 ## Enums
 
--   [MappedValueCollectionRepresentedError](enums/MappedValueCollectionRepresentedError.md)
+-   [MappedValueRepresentableError](enums/MappedValueRepresentableError.md)
 
 ## Extensions
 
 -   [EnumSet](extensions/EnumSet.md)
 -   [MappedValueCollectionRepresented](extensions/MappedValueCollectionRepresented.md)
+-   [MappedValueDictionaryRepresented](extensions/MappedValueDictionaryRepresented.md)
 -   [MappedValueRepresentable](extensions/MappedValueRepresentable.md)
 
 ## Typealiases

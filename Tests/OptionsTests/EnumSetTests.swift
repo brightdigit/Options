@@ -9,9 +9,9 @@
       // swiftlint:disable:next force_unwrapping
       let data = Self.text.data(using: .utf8)!
       let decoder = JSONDecoder()
-      let actual: EnumSet<MockEnum>
+      let actual: EnumSet<MockCollectionEnum>
       do {
-        actual = try decoder.decode(EnumSet<MockEnum>.self, from: data)
+        actual = try decoder.decode(EnumSet<MockCollectionEnum>.self, from: data)
       } catch {
         XCTAssertNil(error)
         return
@@ -20,7 +20,7 @@
     }
 
     internal func testEncoder() {
-      let enumSet = EnumSet<MockEnum>(values: [.a, .b, .c])
+      let enumSet = EnumSet<MockCollectionEnum>(values: [.a, .b, .c])
       let encoder = JSONEncoder()
       let data: Data
       do {
@@ -41,19 +41,19 @@
     }
 
     internal func testInitValue() {
-      let set = EnumSet<MockEnum>(rawValue: 7)
+      let set = EnumSet<MockCollectionEnum>(rawValue: 7)
       XCTAssertEqual(set.rawValue, 7)
     }
 
     internal func testInitValues() {
-      let values: [MockEnum] = [.a, .b, .c]
+      let values: [MockCollectionEnum] = [.a, .b, .c]
       let set = EnumSet(values: values)
       XCTAssertEqual(set.rawValue, 7)
     }
 
     internal func testArray() {
-      let expected: [MockEnum] = [.b, .d]
-      let enumSet = EnumSet<MockEnum>(values: expected)
+      let expected: [MockCollectionEnum] = [.b, .d]
+      let enumSet = EnumSet<MockCollectionEnum>(values: expected)
       let actual = enumSet.array()
       XCTAssertEqual(actual, expected)
     }

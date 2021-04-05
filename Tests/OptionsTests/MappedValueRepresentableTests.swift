@@ -4,10 +4,10 @@
 
   internal final class MappedValueRepresentableTests: XCTestCase {
     internal func testStringValue() {
-      try XCTAssertEqual(MockEnum.a.mappedValue(), "a")
-      try XCTAssertEqual(MockEnum.b.mappedValue(), "b")
-      try XCTAssertEqual(MockEnum.c.mappedValue(), "c")
-      try XCTAssertEqual(MockEnum.d.mappedValue(), "d")
+      try XCTAssertEqual(MockCollectionEnum.a.mappedValue(), "a")
+      try XCTAssertEqual(MockCollectionEnum.b.mappedValue(), "b")
+      try XCTAssertEqual(MockCollectionEnum.c.mappedValue(), "c")
+      try XCTAssertEqual(MockCollectionEnum.d.mappedValue(), "d")
     }
   }
 
