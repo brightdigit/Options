@@ -15,7 +15,7 @@ public struct EnumSet<EnumType: RawRepresentable>: OptionSet
   /// Creates the EnumSet based on the values in the array.
   /// - Parameter values: Array of enum values.
   public init(values: [EnumType]) {
-    let set = Set(values.map { $0.rawValue })
+    let set = Set(values.map(\.rawValue))
     rawValue = Self.cumulativeValue(basedOnRawValues: set)
   }
 
@@ -68,7 +68,7 @@ extension EnumSet: Codable
     var container = encoder.singleValueContainer()
     let values = Self.enums(basedOnRawValue: rawValue)
     let mappedValues = try values
-      .map { $0.rawValue }
+      .map(\.rawValue)
       .map(EnumType.mappedValue(basedOn:))
     try container.encode(mappedValues)
   }

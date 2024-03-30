@@ -5,7 +5,7 @@ public protocol MappedValueCollectionRepresented: MappedValueRepresentable
   static var mappedValues: [MappedType] { get }
 }
 
-public extension MappedValueCollectionRepresented {
+extension MappedValueCollectionRepresented {
   /// Gets the raw value based on the MappedType by finding the index of the mapped value.
   /// - Parameter value: MappedType value.
   /// - Throws: `MappedValueCollectionRepresentedError.valueNotFound`
@@ -13,7 +13,7 @@ public extension MappedValueCollectionRepresented {
   /// - Returns:
   ///   The raw value of the enumeration
   ///   based on the index the MappedType value was found at.
-  static func rawValue(basedOn value: MappedType) throws -> RawValue {
+  public static func rawValue(basedOn value: MappedType) throws -> RawValue {
     guard let index = mappedValues.firstIndex(of: value) else {
       throw MappedValueRepresentableError.valueNotFound
     }
@@ -29,10 +29,10 @@ public extension MappedValueCollectionRepresented {
   ///   if the raw value (i.e. index) is outside the range of the `mappedValues` array.
   /// - Returns:
   ///   The Mapped Type value based on the value in the array at the raw value index.
-  static func mappedValue(basedOn rawValue: RawValue) throws -> MappedType {
+  public static func mappedValue(basedOn rawValue: RawValue) throws -> MappedType {
     guard rawValue < mappedValues.count, rawValue >= 0 else {
       throw MappedValueRepresentableError.valueNotFound
     }
-    return Self.mappedValues[rawValue]
+    return mappedValues[rawValue]
   }
 }

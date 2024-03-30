@@ -5,7 +5,7 @@ public protocol MappedValueDictionaryRepresented: MappedValueRepresentable
   static var mappedValues: [Int: MappedType] { get }
 }
 
-public extension MappedValueDictionaryRepresented {
+extension MappedValueDictionaryRepresented {
   /// Gets the raw value based on the MappedType by finding the key of the mapped value.
   /// - Parameter value: MappedType value.
   /// - Throws: `MappedValueCollectionRepresentedError.valueNotFound`
@@ -13,7 +13,7 @@ public extension MappedValueDictionaryRepresented {
   /// - Returns:
   ///   The raw value of the enumeration
   ///   based on the key the MappedType value.
-  static func rawValue(basedOn value: MappedType) throws -> RawValue {
+  public static func rawValue(basedOn value: MappedType) throws -> RawValue {
     let pair = mappedValues.first { $0.value == value }
     guard let key = pair?.key else {
       throw MappedValueRepresentableError.valueNotFound
@@ -30,7 +30,7 @@ public extension MappedValueDictionaryRepresented {
   ///   if the raw value (i.e. key) is not in the dictionary.
   /// - Returns:
   ///   The Mapped Type value based on the raw value key.
-  static func mappedValue(basedOn rawValue: RawValue) throws -> MappedType {
+  public static func mappedValue(basedOn rawValue: RawValue) throws -> MappedType {
     guard let value = mappedValues[rawValue] else {
       throw MappedValueRepresentableError.valueNotFound
     }
