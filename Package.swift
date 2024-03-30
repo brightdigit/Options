@@ -29,29 +29,3 @@ let package = Package(
     )
   ]
 )
-
-#if canImport(PackageConfig)
-  import PackageConfig
-
-  let requiredCoverage: Int = 90
-
-  let config = PackageConfiguration([
-    "komondor": [
-      "pre-push": [
-        "swift test --enable-code-coverage --enable-test-discovery",
-        "swift run swift-test-codecov .build/debug/codecov/Options.json -v \(requiredCoverage)"
-      ],
-      "pre-commit": [
-        "swift test --generate-linuxmain",
-        "swift test --enable-code-coverage --enable-test-discovery",
-        "swift run swift-test-codecov .build/debug/codecov/Options.json -v \(requiredCoverage)",
-        "swift run swiftformat .",
-        "swift run swiftlint autocorrect",
-        "swift run sourcedocs generate build -cra",
-        "git add .",
-        "swift run swiftformat --lint .",
-        "swift run swiftlint --strict"
-      ]
-    ]
-  ]).write()
-#endif
