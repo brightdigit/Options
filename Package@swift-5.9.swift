@@ -6,6 +6,7 @@
 // swiftlint:disable explicit_acl
 
 import PackageDescription
+import CompilerPluginSupport
 
 let swiftSettings = [
   SwiftSetting.enableUpcomingFeature("BareSlashRegexLiterals"),
@@ -21,6 +22,7 @@ let swiftSettings = [
 
 let package = Package(
   name: "Options",
+  platforms: [.macOS(.v10_15)],
   products: [
     .library(
       name: "Options",
@@ -28,15 +30,22 @@ let package = Package(
     )
   ],
   dependencies: [
-                 .package(url: "https://github.com/apple/swift-syntax", from: "510.0.0")
+    .package(url: "https://github.com/apple/swift-syntax", from: "510.0.0")
     // Dependencies declare other packages that this package depends on.
     // .package(url: /* package url */, from: "1.0.0")
   ],
   targets: [
     .target(
       name: "Options",
-      dependencies: [],
+      dependencies: ["OptionsMacros"],
       swiftSettings: swiftSettings
+    ),
+    .macro(
+        name: "OptionsMacros",
+        dependencies: [
+            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+            .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+        ]
     ),
     .testTarget(
       name: "OptionsTests",
