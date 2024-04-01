@@ -34,3 +34,7 @@ import Foundation
 public enum MappedValueRepresentableError: Error, Sendable {
   case valueNotFound
 }
+
+#if swift(<5.9)
+protocol Sendable {}
+#endif
