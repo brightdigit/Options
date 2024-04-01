@@ -1,5 +1,5 @@
 /// Generic struct for using Enums with RawValue type of Int as an Optionset
-public struct EnumSet<EnumType: RawRepresentable>: OptionSet
+public struct EnumSet<EnumType: RawRepresentable>: OptionSet, Sendable
   where EnumType.RawValue == Int {
   public typealias RawValue = EnumType.RawValue
 

@@ -1,5 +1,5 @@
 /// A generic struct for enumerations which allow for additional values attached.
-public struct MappedEnum<EnumType: MappedValueRepresentable>: Codable
+public struct MappedEnum<EnumType: MappedValueRepresentable>: Codable, Sendable
   where EnumType.MappedType: Codable {
   /// Base Enumeraion value.
   public let value: EnumType

@@ -27,7 +27,7 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public protocol MappedValueRepresentable: RawRepresentable, CaseIterable {
+public protocol MappedValueRepresentable: RawRepresentable, CaseIterable, Sendable {
   associatedtype MappedType
   /// Gets the raw value based on the MappedType.
   /// - Parameter value: MappedType value.
