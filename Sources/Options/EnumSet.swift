@@ -54,7 +54,7 @@ extension EnumSet: Codable
   where EnumType: MappedValueRepresentable, EnumType.MappedType: Codable {
   /// Decodes the EnumSet based on an Array of MappedTypes.
   /// - Parameter decoder: Decoder which contains info as an array of MappedTypes.
-  public init(from decoder: Decoder) throws {
+  public init(from decoder: any Decoder) throws {
     let container = try decoder.singleValueContainer()
     let values = try container.decode([EnumType.MappedType].self)
     let rawValues = try values.map(EnumType.rawValue(basedOn:))
@@ -64,7 +64,7 @@ extension EnumSet: Codable
 
   /// Encodes the EnumSet based on an Array of MappedTypes.
   /// - Parameter encoder: Encoder which will contain info as an array of MappedTypes.
-  public func encode(to encoder: Encoder) throws {
+  public func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
     let values = Self.enums(basedOnRawValue: rawValue)
     let mappedValues = try values

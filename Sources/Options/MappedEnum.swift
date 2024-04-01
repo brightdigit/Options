@@ -12,7 +12,7 @@ public struct MappedEnum<EnumType: MappedValueRepresentable>: Codable, Sendable
 
   /// Decodes the value based on the mapped value.
   /// - Parameter decoder: Decoder.
-  public init(from decoder: Decoder) throws {
+  public init(from decoder: any Decoder) throws {
     let container = try decoder.singleValueContainer()
     let label = try container.decode(EnumType.MappedType.self)
     let rawValue = try EnumType.rawValue(basedOn: label)
@@ -24,7 +24,7 @@ public struct MappedEnum<EnumType: MappedValueRepresentable>: Codable, Sendable
 
   /// Encodes the value based on the mapped value.
   /// - Parameter encoder: Encoder.
-  public func encode(to encoder: Encoder) throws {
+  public func encode(to encoder: any Encoder) throws {
     let string = try EnumType.mappedValue(basedOn: value.rawValue)
     var container = encoder.singleValueContainer()
     try container.encode(string)
