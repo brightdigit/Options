@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.9
 
 // swiftlint:disable explicit_top_level_acl
 // swiftlint:disable prefixed_toplevel_constant
@@ -28,6 +28,7 @@ let package = Package(
     )
   ],
   dependencies: [
+                 .package(url: "https://github.com/apple/swift-syntax", from: "510.0.0")
     // Dependencies declare other packages that this package depends on.
     // .package(url: /* package url */, from: "1.0.0")
   ],
