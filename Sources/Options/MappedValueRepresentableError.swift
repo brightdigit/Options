@@ -36,5 +36,5 @@ public enum MappedValueRepresentableError: Error, Sendable {
 }
 
 #if swift(<5.9)
-protocol Sendable {}
+public protocol Sendable {}
 #endif
