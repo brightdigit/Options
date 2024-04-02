@@ -62,7 +62,10 @@ extension DeclModifierSyntax {
 }
 
 extension ArrayExprSyntax {
-  init<T>(from items: some Collection<T>, _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol) {
+  init<T>(
+    from items: some Collection<T>,
+    _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol
+  ) {
     let values = items.map(closure).map { ArrayElementSyntax(expression: $0) }
     let arrayElement = ArrayElementListSyntax {
       .init(values)
@@ -85,16 +88,46 @@ extension InheritanceClauseSyntax {
   }
 }
 
-// extension VariableDeclSyntax {
-//  init (
-//    tokenModifier: TokenSyntax?,
-//    bindingSpecifier: TokenSyntax,
-//    variableIdenfitier: TokenSyntax,
-//    initializer: PatternBindingSyntax?
-//  ) {
-//
-//  }
-// }
+extension VariableDeclSyntax {
+  init(
+    keywordModifier: Keyword?,
+    bindingKeyword: Keyword,
+    variableName: String,
+    initializerExpression: (some ExprSyntaxProtocol)?
+  ) {
+    let modifiers: DeclModifierListSyntax
+
+    if let keywordModifier {
+      modifiers = .init(itemsBuilder: {
+        DeclModifierSyntax(name: .keyword(keywordModifier))
+      })
+    } else {
+      modifiers = []
+    }
+
+    let initializer: InitializerClauseSyntax?
+
+    if let initializerExpression {
+      initializer = .init(value: initializerExpression)
+    } else {
+      initializer = nil
+    }
+
+    self.init(
+      modifiers: modifiers,
+      bindingSpecifier: .keyword(bindingKeyword),
+      bindings: .init(
+        itemsBuilder: {
+          PatternBindingSyntax(
+            pattern: IdentifierPatternSyntax(identifier: .identifier(variableName)),
+            initializer: initializer
+          )
+        }
+      )
+    )
+  }
+}
+
 public struct OptionsMacro: ExtensionMacro {
   public static func expansion(
     of _: SwiftSyntax.AttributeSyntax,
