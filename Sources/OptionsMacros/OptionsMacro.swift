@@ -61,6 +61,16 @@ extension DeclModifierSyntax {
   }
 }
 
+extension ArrayExprSyntax {
+  init<T>(from items: some Collection<T>, _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol) {
+    let values = items.map(closure).map{ArrayElementSyntax(expression: $0)}
+    var arrayElement = ArrayElementListSyntax {
+      .init(values)
+    }
+    self.init(elements: arrayElement)
+  }
+}
+
 public struct OptionsMacro: ExtensionMacro {
   public static func expansion(
     of _: SwiftSyntax.AttributeSyntax,
