@@ -5,8 +5,8 @@
 // swiftlint:disable line_length
 // swiftlint:disable explicit_acl
 
-import PackageDescription
 import CompilerPluginSupport
+import PackageDescription
 
 let swiftSettings = [
   SwiftSetting.enableUpcomingFeature("BareSlashRegexLiterals"),
@@ -41,11 +41,11 @@ let package = Package(
       swiftSettings: swiftSettings
     ),
     .macro(
-        name: "OptionsMacros",
-        dependencies: [
-            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-            .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-        ]
+      name: "OptionsMacros",
+      dependencies: [
+        .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+        .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+      ]
     ),
     .testTarget(
       name: "OptionsTests",

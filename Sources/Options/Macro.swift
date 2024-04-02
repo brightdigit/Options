@@ -1,5 +1,5 @@
 //
-//  MappedValueRepresentableError.swift
+//  Macro.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,12 +29,11 @@
 
 import Foundation
 
-/// An Error thrown when the `MappedType` value or `RawType` value
-/// are invalid for an `Enum`.
-public enum MappedValueRepresentableError: Error, Sendable {
-  case valueNotFound
-}
-
-#if swift(<5.9)
-  public protocol Sendable {}
+#if swift(>=5.9)
+  @attached(
+    extension,
+    conformances: MappedValueCollectionRepresented, MappedValueRepresentable,
+    names: named(MappedType), named(mappedValues)
+  )
+  public macro Options() = #externalMacro(module: "OptionsMacros", type: "OptionsMacro")
 #endif

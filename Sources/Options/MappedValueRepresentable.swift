@@ -28,7 +28,7 @@
 //
 
 public protocol MappedValueRepresentable: RawRepresentable, CaseIterable, Sendable {
-  associatedtype MappedType
+  associatedtype MappedType = String
   /// Gets the raw value based on the MappedType.
   /// - Parameter value: MappedType value.
   /// - Returns: The raw value of the enumeration based on the `MappedType `value.

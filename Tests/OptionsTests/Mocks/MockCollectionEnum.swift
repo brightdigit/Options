@@ -29,18 +29,28 @@
 
 import Options
 
-// swiftlint:disable identifier_name
-
-internal enum MockCollectionEnum: Int, MappedValueCollectionRepresented {
-  case a
-  case b
-  case c
-  case d
-  internal typealias MappedType = String
-  internal static let mappedValues = [
-    "a",
-    "b",
-    "c",
-    "d"
-  ]
-}
+#if swift(>=5.9)
+  // swiftlint:disable identifier_name
+  @Options
+  internal enum MockCollectionEnum: Int, Sendable {
+    case a
+    case b
+    case c
+    case d
+  }
+#else
+  // swiftlint:disable identifier_name
+  internal enum MockCollectionEnum: Int, MappedValueCollectionRepresented {
+    case a
+    case b
+    case c
+    case d
+    internal typealias MappedType = String
+    internal static let mappedValues = [
+      "a",
+      "b",
+      "c",
+      "d"
+    ]
+  }
+#endif
