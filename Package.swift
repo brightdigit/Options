@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.7.1
 
 // swiftlint:disable explicit_top_level_acl
 // swiftlint:disable prefixed_toplevel_constant
