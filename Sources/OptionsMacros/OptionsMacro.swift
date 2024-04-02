@@ -63,57 +63,68 @@ extension DeclModifierSyntax {
 
 extension ArrayExprSyntax {
   init<T>(from items: some Collection<T>, _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol) {
-    let values = items.map(closure).map{ArrayElementSyntax(expression: $0)}
-    var arrayElement = ArrayElementListSyntax {
+    let values = items.map(closure).map { ArrayElementSyntax(expression: $0) }
+    let arrayElement = ArrayElementListSyntax {
       .init(values)
     }
     self.init(elements: arrayElement)
   }
 }
 
+extension InheritanceClauseSyntax {
+  init(protocols: [SwiftSyntax.TypeSyntax]) {
+    self.init(
+      inheritedTypes: .init(itemsBuilder: {
+        .init(
+          protocols.map { typeSyntax in
+            InheritedTypeSyntax(type: typeSyntax)
+          }
+        )
+      })
+    )
+  }
+}
+
+// extension VariableDeclSyntax {
+//  init (
+//    tokenModifier: TokenSyntax?,
+//    bindingSpecifier: TokenSyntax,
+//    variableIdenfitier: TokenSyntax,
+//    initializer: PatternBindingSyntax?
+//  ) {
+//
+//  }
+// }
 public struct OptionsMacro: ExtensionMacro {
   public static func expansion(
     of _: SwiftSyntax.AttributeSyntax,
     attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
-    providingExtensionsOf type: some SwiftSyntax.TypeSyntaxProtocol,
-    conformingTo _: [SwiftSyntax.TypeSyntax],
+    providingExtensionsOf _: some SwiftSyntax.TypeSyntaxProtocol,
+    conformingTo protocols: [SwiftSyntax.TypeSyntax],
     in _: some SwiftSyntaxMacros.MacroExpansionContext
   ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
     guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
       throw CustomError.message("Type must be struct.")
     }
 
+    let typeName = enumDecl.name
+
     let access = enumDecl.modifiers.first(where: \.isNeededAccessLevelModifier)
 
-    let values = enumDecl.caseElements.map { caseElement in
-      ArrayElementSyntax(expression: StringLiteralExprSyntax(content: caseElement.name.trimmed.text))
+    let arrayExpression = ArrayExprSyntax(from: enumDecl.caseElements) { caseElement in
+      StringLiteralExprSyntax(content: caseElement.name.trimmed.text)
     }
-
-    var arrayElement = ArrayElementListSyntax {
-      .init(values)
-    }
-
-    let arrayExpression = ArrayExprSyntax(elements: arrayElement)
-
-    let typeName = enumDecl.name
 
     let typeAlias = TypeAliasDeclSyntax(
       name: "MappedType",
       initializer: .init(value: IdentifierTypeSyntax(name: "String"))
     )
 
-    let inheritanceClause = InheritanceClauseSyntax(
-      inheritedTypes: .init(itemsBuilder: {
-        InheritedTypeSyntax(type: IdentifierTypeSyntax(name: "MappedValueRepresentable"))
-        InheritedTypeSyntax(type: IdentifierTypeSyntax(name: "MappedValueCollectionRepresented"))
-
-      })
-    )
+    let inheritanceClause = InheritanceClauseSyntax(protocols: protocols)
 
     let mappedValuesSyntax = VariableDeclSyntax(
       modifiers: .init(itemsBuilder: {
         DeclModifierSyntax(name: .keyword(.static))
-
       }),
       bindingSpecifier: .keyword(.let),
       bindings: .init(itemsBuilder: {
@@ -121,24 +132,21 @@ public struct OptionsMacro: ExtensionMacro {
           pattern: IdentifierPatternSyntax(identifier: .identifier("mappedValues")),
           initializer: .init(value: arrayExpression)
         )
-
       })
     )
 
-//    static let mappedValues = [
-//      "github",
-//      "travisci",
-//      "circleci",
-//      "bitrise"
-//    ]
     let extensionDecl = ExtensionDeclSyntax(
       modifiers: DeclModifierListSyntax([access].compactMap { $0 }),
       extendedType: IdentifierTypeSyntax(name: typeName),
       inheritanceClause: inheritanceClause,
-      memberBlock: MemberBlockSyntax(members: MemberBlockItemListSyntax(itemsBuilder: {
-        typeAlias
-        mappedValuesSyntax
-      }))
+      memberBlock: MemberBlockSyntax(
+        members: MemberBlockItemListSyntax(
+          itemsBuilder: {
+            typeAlias
+            mappedValuesSyntax
+          }
+        )
+      )
     )
     return [extensionDecl]
   }
