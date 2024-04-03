@@ -32,9 +32,9 @@ import Foundation
 #if swift(>=5.9)
   @attached(
     extension,
-    conformances: MappedValueCollectionRepresented, MappedValueRepresentable,
+    conformances: MappedValueRepresentable, MappedValueGenericRepresented,
     names: named(MappedType), named(mappedValues)
   )
-  @attached(peer)
+  @attached(peer, names: suffixed(Set))
   public macro Options() = #externalMacro(module: "OptionsMacros", type: "OptionsMacro")
 #endif
