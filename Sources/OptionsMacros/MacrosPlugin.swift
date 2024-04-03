@@ -1,5 +1,5 @@
 //
-//  OptionsMacro.swift
+//  MacrosPlugin.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,24 +27,13 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+import SwiftCompilerPlugin
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct OptionsMacro: ExtensionMacro {
-  public static func expansion(
-    of _: SwiftSyntax.AttributeSyntax,
-    attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
-    providingExtensionsOf _: some SwiftSyntax.TypeSyntaxProtocol,
-    conformingTo protocols: [SwiftSyntax.TypeSyntax],
-    in _: some SwiftSyntaxMacros.MacroExpansionContext
-  ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
-    guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-      throw InvalidDeclError(kind: declaration.kind)
-    }
-
-    let extensionDecl = ExtensionDeclSyntax(
-      enumDecl: enumDecl, conformingTo: protocols
-    )
-    return [extensionDecl]
-  }
+@main
+internal struct MacrosPlugin: CompilerPlugin {
+  internal let providingMacros: [any Macro.Type] = [
+    OptionsMacro.self
+  ]
 }

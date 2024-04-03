@@ -29,12 +29,18 @@
 
 import Foundation
 
-/// An Error thrown when the `MappedType` value or `RawType` value
-/// are invalid for an `Enum`.
-public enum MappedValueRepresentableError: Error, Sendable {
-  case valueNotFound
-}
-
-#if swift(<5.9)
-  public protocol Sendable {}
+// swiftlint:disable file_types_order
+#if swift(>=5.9)
+  /// An Error thrown when the `MappedType` value or `RawType` value
+  /// are invalid for an `Enum`.
+  public enum MappedValueRepresentableError: Error {
+    case valueNotFound
+  }
+#else
+  /// An Error thrown when the `MappedType` value or `RawType` value
+  /// are invalid for an `Enum`.
+  public enum MappedValueRepresentableError: Error {
+    case valueNotFound
+  }
 #endif
+// swiftlint:enable file_types_order

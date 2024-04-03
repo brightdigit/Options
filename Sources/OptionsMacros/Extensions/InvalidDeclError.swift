@@ -1,5 +1,5 @@
 //
-//  OptionsMacro.swift
+//  InvalidDeclError.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,24 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import SwiftSyntax
-import SwiftSyntaxMacros
+@preconcurrency import SwiftSyntax
 
-public struct OptionsMacro: ExtensionMacro {
-  public static func expansion(
-    of _: SwiftSyntax.AttributeSyntax,
-    attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
-    providingExtensionsOf _: some SwiftSyntax.TypeSyntaxProtocol,
-    conformingTo protocols: [SwiftSyntax.TypeSyntax],
-    in _: some SwiftSyntaxMacros.MacroExpansionContext
-  ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
-    guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-      throw InvalidDeclError(kind: declaration.kind)
-    }
-
-    let extensionDecl = ExtensionDeclSyntax(
-      enumDecl: enumDecl, conformingTo: protocols
-    )
-    return [extensionDecl]
-  }
+internal struct InvalidDeclError: Error, Sendable {
+  internal let kind: SyntaxKind
 }

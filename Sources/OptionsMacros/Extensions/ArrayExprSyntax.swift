@@ -1,5 +1,5 @@
 //
-//  OptionsMacro.swift
+//  ArrayExprSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -28,23 +28,16 @@
 //
 
 import SwiftSyntax
-import SwiftSyntaxMacros
 
-public struct OptionsMacro: ExtensionMacro {
-  public static func expansion(
-    of _: SwiftSyntax.AttributeSyntax,
-    attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
-    providingExtensionsOf _: some SwiftSyntax.TypeSyntaxProtocol,
-    conformingTo protocols: [SwiftSyntax.TypeSyntax],
-    in _: some SwiftSyntaxMacros.MacroExpansionContext
-  ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
-    guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-      throw InvalidDeclError(kind: declaration.kind)
+extension ArrayExprSyntax {
+  internal init<T>(
+    from items: some Collection<T>,
+    _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol
+  ) {
+    let values = items.map(closure).map { ArrayElementSyntax(expression: $0) }
+    let arrayElement = ArrayElementListSyntax {
+      .init(values)
     }
-
-    let extensionDecl = ExtensionDeclSyntax(
-      enumDecl: enumDecl, conformingTo: protocols
-    )
-    return [extensionDecl]
+    self.init(elements: arrayElement)
   }
 }

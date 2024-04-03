@@ -1,5 +1,5 @@
 //
-//  OptionsMacro.swift
+//  DeclModifierListSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -28,23 +28,15 @@
 //
 
 import SwiftSyntax
-import SwiftSyntaxMacros
 
-public struct OptionsMacro: ExtensionMacro {
-  public static func expansion(
-    of _: SwiftSyntax.AttributeSyntax,
-    attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
-    providingExtensionsOf _: some SwiftSyntax.TypeSyntaxProtocol,
-    conformingTo protocols: [SwiftSyntax.TypeSyntax],
-    in _: some SwiftSyntaxMacros.MacroExpansionContext
-  ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
-    guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-      throw InvalidDeclError(kind: declaration.kind)
+extension DeclModifierListSyntax {
+  internal init(keywordModifier: Keyword?) {
+    if let keywordModifier {
+      self.init {
+        DeclModifierSyntax(name: .keyword(keywordModifier))
+      }
+    } else {
+      self.init([])
     }
-
-    let extensionDecl = ExtensionDeclSyntax(
-      enumDecl: enumDecl, conformingTo: protocols
-    )
-    return [extensionDecl]
   }
 }

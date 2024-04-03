@@ -1,5 +1,5 @@
 //
-//  OptionsMacro.swift
+//  TypeAliasDeclSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -28,23 +28,12 @@
 //
 
 import SwiftSyntax
-import SwiftSyntaxMacros
 
-public struct OptionsMacro: ExtensionMacro {
-  public static func expansion(
-    of _: SwiftSyntax.AttributeSyntax,
-    attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
-    providingExtensionsOf _: some SwiftSyntax.TypeSyntaxProtocol,
-    conformingTo protocols: [SwiftSyntax.TypeSyntax],
-    in _: some SwiftSyntaxMacros.MacroExpansionContext
-  ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
-    guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-      throw InvalidDeclError(kind: declaration.kind)
-    }
-
-    let extensionDecl = ExtensionDeclSyntax(
-      enumDecl: enumDecl, conformingTo: protocols
+extension TypeAliasDeclSyntax {
+  internal init(name: TokenSyntax, for initializerTypeName: TokenSyntax) {
+    self.init(
+      name: name,
+      initializer: .init(value: IdentifierTypeSyntax(name: initializerTypeName))
     )
-    return [extensionDecl]
   }
 }

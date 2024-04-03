@@ -1,5 +1,5 @@
 //
-//  OptionsMacro.swift
+//  VariableDeclSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -28,23 +28,43 @@
 //
 
 import SwiftSyntax
-import SwiftSyntaxMacros
 
-public struct OptionsMacro: ExtensionMacro {
-  public static func expansion(
-    of _: SwiftSyntax.AttributeSyntax,
-    attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
-    providingExtensionsOf _: some SwiftSyntax.TypeSyntaxProtocol,
-    conformingTo protocols: [SwiftSyntax.TypeSyntax],
-    in _: some SwiftSyntaxMacros.MacroExpansionContext
-  ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
-    guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-      throw InvalidDeclError(kind: declaration.kind)
+extension VariableDeclSyntax {
+  internal init(
+    keywordModifier: Keyword?,
+    bindingKeyword: Keyword,
+    variableName: String,
+    initializerExpression: (some ExprSyntaxProtocol)?
+  ) {
+    let modifiers = DeclModifierListSyntax(keywordModifier: keywordModifier)
+
+    let initializer: InitializerClauseSyntax? =
+      initializerExpression.map { .init(value: $0) }
+
+    self.init(
+      modifiers: modifiers,
+      bindingSpecifier: .keyword(bindingKeyword),
+      bindings: .init {
+        PatternBindingSyntax(
+          pattern: IdentifierPatternSyntax(identifier: .identifier(variableName)),
+          initializer: initializer
+        )
+      }
+    )
+  }
+
+  internal static func mappedValuesDeclarationForCases(
+    _ caseElements: [EnumCaseElementSyntax]
+  ) -> VariableDeclSyntax {
+    let arrayExpression = ArrayExprSyntax(from: caseElements) { caseElement in
+      StringLiteralExprSyntax(content: caseElement.name.trimmed.text)
     }
 
-    let extensionDecl = ExtensionDeclSyntax(
-      enumDecl: enumDecl, conformingTo: protocols
+    return VariableDeclSyntax(
+      keywordModifier: .static,
+      bindingKeyword: .let,
+      variableName: "mappedValues",
+      initializerExpression: arrayExpression
     )
-    return [extensionDecl]
   }
 }

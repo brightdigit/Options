@@ -2,7 +2,6 @@
 
 // swiftlint:disable explicit_top_level_acl
 // swiftlint:disable prefixed_toplevel_constant
-// swiftlint:disable line_length
 // swiftlint:disable explicit_acl
 
 import CompilerPluginSupport
@@ -45,7 +44,8 @@ let package = Package(
       dependencies: [
         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
         .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-      ]
+      ],
+      swiftSettings: swiftSettings
     ),
     .testTarget(
       name: "OptionsTests",
@@ -53,3 +53,7 @@ let package = Package(
     )
   ]
 )
+
+// swiftlint:enable explicit_top_level_acl
+// swiftlint:enable prefixed_toplevel_constant
+// swiftlint:enable explicit_acl

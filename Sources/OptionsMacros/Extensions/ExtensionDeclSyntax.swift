@@ -1,5 +1,5 @@
 //
-//  OptionsMacro.swift
+//  ExtensionDeclSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -28,23 +28,26 @@
 //
 
 import SwiftSyntax
-import SwiftSyntaxMacros
 
-public struct OptionsMacro: ExtensionMacro {
-  public static func expansion(
-    of _: SwiftSyntax.AttributeSyntax,
-    attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
-    providingExtensionsOf _: some SwiftSyntax.TypeSyntaxProtocol,
-    conformingTo protocols: [SwiftSyntax.TypeSyntax],
-    in _: some SwiftSyntaxMacros.MacroExpansionContext
-  ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
-    guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-      throw InvalidDeclError(kind: declaration.kind)
-    }
+extension ExtensionDeclSyntax {
+  internal init(
+    enumDecl: EnumDeclSyntax,
+    conformingTo protocols: [SwiftSyntax.TypeSyntax]
+  ) {
+    let typeName = enumDecl.name
 
-    let extensionDecl = ExtensionDeclSyntax(
-      enumDecl: enumDecl, conformingTo: protocols
+    let access = enumDecl.modifiers.first(where: \.isNeededAccessLevelModifier)
+
+    self.init(
+      modifiers: DeclModifierListSyntax([access].compactMap { $0 }),
+      extendedType: IdentifierTypeSyntax(name: typeName),
+      inheritanceClause: InheritanceClauseSyntax(protocols: protocols),
+      memberBlock: MemberBlockSyntax(
+        members: MemberBlockItemListSyntax {
+          TypeAliasDeclSyntax(name: "MappedType", for: "String")
+          VariableDeclSyntax.mappedValuesDeclarationForCases(enumDecl.caseElements)
+        }
+      )
     )
-    return [extensionDecl]
   }
 }
