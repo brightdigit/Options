@@ -30,7 +30,26 @@
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct OptionsMacro: ExtensionMacro {
+public struct OptionsMacro: ExtensionMacro, PeerMacro {
+  public static func expansion(
+    of _: SwiftSyntax.AttributeSyntax,
+    providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
+    in _: some SwiftSyntaxMacros.MacroExpansionContext
+  ) throws -> [SwiftSyntax.DeclSyntax] {
+    guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
+      throw InvalidDeclError(kind: declaration.kind)
+    }
+    let typeName = enumDecl.name
+
+    let aliasName: TokenSyntax = "\(typeName.trimmed)Set"
+
+    let initializerName: TokenSyntax = "EnumSet<\(typeName)>"
+
+    return [
+      .init(TypeAliasDeclSyntax(name: aliasName, for: initializerName))
+    ]
+  }
+
   public static func expansion(
     of _: SwiftSyntax.AttributeSyntax,
     attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,

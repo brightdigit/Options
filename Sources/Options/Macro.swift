@@ -35,5 +35,6 @@ import Foundation
     conformances: MappedValueCollectionRepresented, MappedValueRepresentable,
     names: named(MappedType), named(mappedValues)
   )
+  @attached(peer)
   public macro Options() = #externalMacro(module: "OptionsMacros", type: "OptionsMacro")
 #endif
