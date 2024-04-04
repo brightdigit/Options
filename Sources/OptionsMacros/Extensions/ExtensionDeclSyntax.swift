@@ -38,7 +38,10 @@ extension ExtensionDeclSyntax {
 
     let access = enumDecl.modifiers.first(where: \.isNeededAccessLevelModifier)
 
-    let mappedValues = try VariableDeclSyntax.mappedValuesDeclarationForCases(enumDecl.caseElements)
+    let mappedValues = try VariableDeclSyntax.mappedValuesDeclarationForCases(
+      enumDecl.caseElements
+    )
+
     self.init(
       modifiers: DeclModifierListSyntax([access].compactMap { $0 }),
       extendedType: IdentifierTypeSyntax(name: typeName),

@@ -1,5 +1,5 @@
 //
-//  ArrayExprSyntax.swift
+//  KeyValues.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,15 +29,42 @@
 
 import SwiftSyntax
 
-extension ArrayExprSyntax {
-  internal init<T>(
-    from items: some Collection<T>,
-    _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol
-  ) {
-    let values = items.map(closure).map { ArrayElementSyntax(expression: $0) }
-    let arrayElement = ArrayElementListSyntax {
-      .init(values)
+internal struct KeyValues {
+  internal private(set) var lastKey: Int?
+  internal private(set) var dictionary = [Int: String]()
+
+  internal var count: Int {
+    dictionary.count
+  }
+
+  internal var nextKey: Int {
+    (lastKey ?? -1) + 1
+  }
+
+  internal mutating func append(value: String, withKey key: Int? = nil) throws {
+    let key = key ?? nextKey
+    guard dictionary[key] == nil else {
+      throw InvalidDeclError.rawValue(key)
     }
-    self.init(elements: arrayElement)
+    lastKey = key
+    dictionary[key] = value
+  }
+
+  internal func get(_ key: Int) -> String? {
+    dictionary[key]
+  }
+}
+
+extension KeyValues {
+  internal init(caseElements: [EnumCaseElementSyntax]) throws {
+    self.init()
+    for caseElement in caseElements {
+      let intText = caseElement.rawValue?.value
+        .as(IntegerLiteralExprSyntax.self)?.literal.text
+      let key = intText.flatMap { Int($0) }
+      let value =
+        caseElement.name.trimmed.text
+      try append(value: value, withKey: key)
+    }
   }
 }

@@ -1,58 +1,51 @@
-/// Protocol which simplifies mapped value by using a dictionary.
+//
+//  MappedValueDictionaryRepresented.swift
+//  SimulatorServices
+//
+//  Created by Leo Dion.
+//  Copyright © 2024 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the “Software”), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
+
+// swiftlint:disable:next line_length
+@available(*, deprecated, renamed: "MappedValueGenericRepresented", message: "Use MappedValueGenericRepresented instead.")
 public protocol MappedValueDictionaryRepresented: MappedValueGenericRepresented
-where MappedValueType == Dictionary<Int, MappedType> {
-}
+  where MappedValueType == [Int: MappedType] {}
 
-
-extension Dictionary : MappedValues where Key == Int, Value : Equatable {
+extension Dictionary: MappedValues where Key == Int, Value: Equatable {
   public func key(value: Value) throws -> Int {
-        let pair = self.first { $0.value == value }
-        guard let key = pair?.key else {
-          throw MappedValueRepresentableError.valueNotFound
-        }
-    
-        return key
+    let pair = first { $0.value == value }
+    guard let key = pair?.key else {
+      throw MappedValueRepresentableError.valueNotFound
+    }
+
+    return key
   }
-  
+
   public func value(key: Int) throws -> Value {
-        guard let value = self[key] else {
-          throw MappedValueRepresentableError.valueNotFound
-        }
-        return value
+    guard let value = self[key] else {
+      throw MappedValueRepresentableError.valueNotFound
+    }
+    return value
   }
-  
-  
 }
-//
-//extension MappedValueDictionaryRepresented {
-//  /// Gets the raw value based on the MappedType by finding the key of the mapped value.
-//  /// - Parameter value: MappedType value.
-//  /// - Throws: `MappedValueCollectionRepresentedError.valueNotFound`
-//  ///   If the value was not found in the dictionary
-//  /// - Returns:
-//  ///   The raw value of the enumeration
-//  ///   based on the key the MappedType value.
-//  public static func rawValue(basedOn value: MappedType) throws -> RawValue {
-//    let pair = mappedValues.first { $0.value == value }
-//    guard let key = pair?.key else {
-//      throw MappedValueRepresentableError.valueNotFound
-//    }
-//
-//    return key
-//  }
-//
-//  /// Gets the mapped value based on the rawValue
-//  /// by access the dictionary at the raw value key.
-//  /// - Parameter rawValue: The raw value of the enumeration
-//  ///   which pretains to its index in the `mappedValues` Array.
-//  /// - Throws: `MappedValueCollectionRepresentedError.valueNotFound`
-//  ///   if the raw value (i.e. key) is not in the dictionary.
-//  /// - Returns:
-//  ///   The Mapped Type value based on the raw value key.
-//  public static func mappedValue(basedOn rawValue: RawValue) throws -> MappedType {
-//    guard let value = mappedValues[rawValue] else {
-//      throw MappedValueRepresentableError.valueNotFound
-//    }
-//    return value
-//  }
-//}

@@ -1,5 +1,5 @@
 //
-//  ArrayExprSyntax.swift
+//  Array.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,17 +27,16 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import SwiftSyntax
+import Foundation
 
-extension ArrayExprSyntax {
-  internal init<T>(
-    from items: some Collection<T>,
-    _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol
-  ) {
-    let values = items.map(closure).map { ArrayElementSyntax(expression: $0) }
-    let arrayElement = ArrayElementListSyntax {
-      .init(values)
+extension [String] {
+  internal init?(keyValues: KeyValues) {
+    self.init()
+    for key in 0 ..< keyValues.count {
+      guard let value = keyValues.get(key) else {
+        return nil
+      }
+      append(value)
     }
-    self.init(elements: arrayElement)
   }
 }

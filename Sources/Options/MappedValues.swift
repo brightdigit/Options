@@ -1,5 +1,5 @@
 //
-//  ArrayExprSyntax.swift
+//  MappedValues.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,17 +27,10 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import SwiftSyntax
+import Foundation
 
-extension ArrayExprSyntax {
-  internal init<T>(
-    from items: some Collection<T>,
-    _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol
-  ) {
-    let values = items.map(closure).map { ArrayElementSyntax(expression: $0) }
-    let arrayElement = ArrayElementListSyntax {
-      .init(values)
-    }
-    self.init(elements: arrayElement)
-  }
+public protocol MappedValues<Value> {
+  associatedtype Value: Equatable
+  func key(value: Value) throws -> Int
+  func value(key: Int) throws -> Value
 }

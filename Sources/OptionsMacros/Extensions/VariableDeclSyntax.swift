@@ -29,43 +29,6 @@
 
 import SwiftSyntax
 
-struct KeyValues {
-  var lastKey : Int? = nil
-  var dictionary = [Int: String]()
-  
-  var count : Int {
-    return dictionary.count
-  }
-  
-  var nextKey : Int {
-    return (lastKey ?? -1) + 1
-  }
-  
-  mutating func append(value: String, withKey key: Int? = nil) throws {
-    let key = key ?? nextKey
-    guard dictionary[key] == nil else {
-      throw InvalidDeclError.rawValue(key)
-    }
-    lastKey = key
-    dictionary[key] = value
-  }
-  
-  func get(_ key: Int) -> String? {
-    return dictionary[key]
-  }
-}
-
-extension KeyValues {
-  init(caseElements: [EnumCaseElementSyntax]) throws {
-    self.init()
-    for caseElement in caseElements {
-      let key = (caseElement.rawValue?.value.as(IntegerLiteralExprSyntax.self)?.literal.text).flatMap{Int($0)}
-      let value =
-      caseElement.name.trimmed.text
-      try self.append(value: value, withKey: key)
-    }
-  }
-}
 extension VariableDeclSyntax {
   internal init(
     keywordModifier: Keyword?,
@@ -89,8 +52,10 @@ extension VariableDeclSyntax {
       }
     )
   }
-  
-  internal static func initializerExpression(from caseElements: [EnumCaseElementSyntax]) throws -> any ExprSyntaxProtocol {
+
+  internal static func initializerExpression(
+    from caseElements: [EnumCaseElementSyntax]
+  ) throws -> any ExprSyntaxProtocol {
     let keyValues = try KeyValues(caseElements: caseElements)
     if let array = Array(keyValues: keyValues) {
       return ArrayExprSyntax(from: array) { value in
@@ -104,9 +69,6 @@ extension VariableDeclSyntax {
   internal static func mappedValuesDeclarationForCases(
     _ caseElements: [EnumCaseElementSyntax]
   ) throws -> VariableDeclSyntax {
-
-    
-    //DictionaryElementSyntax(key: IntegerLiteralExprSyntax(integerLiteral: ), value: <#T##ExprSyntaxProtocol#>)
     let arrayExpression = try Self.initializerExpression(from: caseElements)
 
     return VariableDeclSyntax(

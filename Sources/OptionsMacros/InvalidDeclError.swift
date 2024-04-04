@@ -30,6 +30,6 @@
 @preconcurrency import SwiftSyntax
 
 internal enum InvalidDeclError: Error, Sendable {
-  case kind( SyntaxKind)
+  case kind(SyntaxKind)
   case rawValue(Int)
 }

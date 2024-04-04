@@ -1,5 +1,5 @@
 //
-//  ArrayExprSyntax.swift
+//  DictionaryElementSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,15 +29,19 @@
 
 import SwiftSyntax
 
-extension ArrayExprSyntax {
-  internal init<T>(
-    from items: some Collection<T>,
-    _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol
-  ) {
-    let values = items.map(closure).map { ArrayElementSyntax(expression: $0) }
-    let arrayElement = ArrayElementListSyntax {
-      .init(values)
-    }
-    self.init(elements: arrayElement)
+extension DictionaryElementSyntax {
+  internal init(pair: (key: Int, value: String)) {
+    self.init(key: pair.key, value: pair.value)
+  }
+
+  internal init(key: Int, value: String) {
+    self.init(
+      key: IntegerLiteralExprSyntax(integerLiteral: key),
+      value: StringLiteralExprSyntax(
+        openingQuote: .stringQuoteToken(),
+        segments: .init([.stringSegment(.init(content: .stringSegment(value)))]),
+        closingQuote: .stringQuoteToken()
+      )
+    )
   }
 }
