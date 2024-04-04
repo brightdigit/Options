@@ -29,6 +29,7 @@
 
 @preconcurrency import SwiftSyntax
 
-internal struct InvalidDeclError: Error, Sendable {
-  internal let kind: SyntaxKind
+internal enum InvalidDeclError: Error, Sendable {
+  case kind( SyntaxKind)
+  case rawValue(Int)
 }

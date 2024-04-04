@@ -37,7 +37,7 @@ public struct OptionsMacro: ExtensionMacro, PeerMacro {
     in _: some SwiftSyntaxMacros.MacroExpansionContext
   ) throws -> [SwiftSyntax.DeclSyntax] {
     guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-      throw InvalidDeclError(kind: declaration.kind)
+      throw InvalidDeclError.kind(declaration.kind)
     }
     let typeName = enumDecl.name
 
@@ -58,10 +58,10 @@ public struct OptionsMacro: ExtensionMacro, PeerMacro {
     in _: some SwiftSyntaxMacros.MacroExpansionContext
   ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
     guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-      throw InvalidDeclError(kind: declaration.kind)
+      throw InvalidDeclError.kind(declaration.kind)
     }
 
-    let extensionDecl = ExtensionDeclSyntax(
+    let extensionDecl = try ExtensionDeclSyntax(
       enumDecl: enumDecl, conformingTo: protocols
     )
     return [extensionDecl]

@@ -33,11 +33,12 @@ extension ExtensionDeclSyntax {
   internal init(
     enumDecl: EnumDeclSyntax,
     conformingTo protocols: [SwiftSyntax.TypeSyntax]
-  ) {
+  ) throws {
     let typeName = enumDecl.name
 
     let access = enumDecl.modifiers.first(where: \.isNeededAccessLevelModifier)
 
+    let mappedValues = try VariableDeclSyntax.mappedValuesDeclarationForCases(enumDecl.caseElements)
     self.init(
       modifiers: DeclModifierListSyntax([access].compactMap { $0 }),
       extendedType: IdentifierTypeSyntax(name: typeName),
@@ -45,7 +46,7 @@ extension ExtensionDeclSyntax {
       memberBlock: MemberBlockSyntax(
         members: MemberBlockItemListSyntax {
           TypeAliasDeclSyntax(name: "MappedType", for: "String")
-          VariableDeclSyntax.mappedValuesDeclarationForCases(enumDecl.caseElements)
+          mappedValues
         }
       )
     )

@@ -29,7 +29,42 @@
 
 import SwiftSyntax
 
+extension DictionaryExprSyntax {
+  internal init(keyValues: KeyValues) {
+    let dictionaryElements = keyValues.dictionary.map { (key: Int, value: String) in
+      
+      return DictionaryElementSyntax(
+        key: IntegerLiteralExprSyntax(integerLiteral: key),
+        value: StringLiteralExprSyntax(
+                                        openingQuote: .stringQuoteToken(),
+                                        segments: .init([.stringSegment(.init(content: .stringSegment(value)))]),
+                                        closingQuote: .stringQuoteToken()
+                                      )
+      )
+    }
+    let list = DictionaryElementListSyntax {
+      .init(dictionaryElements)
+    }
+    self.init(content: .elements(list))
+  }
+}
+
+extension Array where Element == String {
+  init?(keyValues: KeyValues) {
+    self.init()
+    for key in 0..<keyValues.count {
+//      guard self.count == key else {
+//        return nil
+//      }
+      guard let value = keyValues.get(key) else {
+        return nil
+      }
+      self.append(value)
+    }
+  }
+}
 extension ArrayExprSyntax {
+  
   internal init<T>(
     from items: some Collection<T>,
     _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol
