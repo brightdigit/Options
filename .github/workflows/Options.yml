@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         runs-on: [ubuntu-20.04, ubuntu-22.04]
-        swift-version: ["5.9.2", "5.10"]
+        swift-version: ["5.7.1", "5.8.1", "5.9.2", "5.10"]
     steps:
       - uses: actions/checkout@v4
       - name: Cache swift package modules
