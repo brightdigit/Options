@@ -29,8 +29,8 @@
 
 import Foundation
 
-extension [String] {
-  internal init?(keyValues: KeyValues) {
+extension Array {
+  internal init?(keyValues: KeyValues) where Element == String {
     self.init()
     for key in 0 ..< keyValues.count {
       guard let value = keyValues.get(key) else {

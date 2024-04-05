@@ -27,7 +27,7 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-/// Protocol which simplifies mapped value by using an ordered Array of values.
+/// Protocol which simplifies ``MappedValueRepresentable``by using a ``MappedValues``.
 public protocol MappedValueGenericRepresented: MappedValueRepresentable
   where RawValue == Int, MappedType: Equatable {
   associatedtype MappedValueType: MappedValues<MappedType>
