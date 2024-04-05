@@ -73,7 +73,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       matrix:
-        runs-on: ["macos-12.0"]
+        runs-on: ["macos-12"]
         xcode: ["/Applications/Xcode_14.1.app","/Applications/Xcode_14.2.app"]
     steps:
       - uses: actions/checkout@v4
