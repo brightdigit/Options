@@ -30,7 +30,7 @@
 import Foundation
 
 // swiftlint:disable file_types_order
-#if swift(>=5.9)
+#if swift(>=5.9.1)
   /// An Error thrown when the `MappedType` value or `RawType` value
   /// are invalid for an `Enum`.
   public enum MappedValueRepresentableError: Error {
