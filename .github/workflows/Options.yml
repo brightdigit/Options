@@ -69,12 +69,41 @@ jobs:
     env:
       PACKAGE_NAME: Options
       SWIFT_VER: ${{ matrix.swift-version }}
-    runs-on: ${{ matrix.runs-on }}
+    runs-on: ${{ matrix.os }}
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       matrix:
-        runs-on: ["macos-12"]
-        xcode: ["/Applications/Xcode_14.1.app","/Applications/Xcode_14.2.app"]
+        include:
+          - xcode: "/Applications/Xcode_14.1.app"
+            os: macos-12
+            iOSVersion: "16.1"
+            watchOSVersion: "9.0"
+            watchName: "Apple Watch Series 5 - 40mm"
+            iPhoneName: "iPhone 12 mini"   
+          - xcode: "/Applications/Xcode_14.2.app"
+            os: macos-12
+            iOSVersion: "16.2"
+            watchOSVersion: "9.1"
+            watchName: "Apple Watch Ultra (49mm)"
+            iPhoneName: "iPhone 14"
+          - xcode: "/Applications/Xcode_15.0.1.app"
+            os: macos-13
+            iOSVersion: "17.0.1"
+            watchOSVersion: "10.0"
+            watchName: "Apple Watch Series 9 (41mm)"
+            iPhoneName: "iPhone 15"
+          - xcode: "/Applications/Xcode_15.1.app"
+            os: macos-13
+            iOSVersion: "17.2"
+            watchOSVersion: "10.2"
+            watchName: "Apple Watch Series 9 (45mm)"
+            iPhoneName: "iPhone 15 Pro"
+          - xcode: "/Applications/Xcode_15.2.app"
+            os: macos-14
+            iOSVersion: "17.2"
+            watchOSVersion: "10.2"
+            watchName: "Apple Watch Ultra (49mm)"
+            iPhoneName: "iPhone 15 Pro Max"
     steps:
       - uses: actions/checkout@v4
       - name: Cache swift package modules
