@@ -1,5 +1,5 @@
 //
-//  MappedValueDictionaryRepresented.swift
+//  Dictionary.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.

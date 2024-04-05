@@ -1,5 +1,5 @@
 //
-//  MappedValueCollectionRepresented.swift
+//  Array.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -30,9 +30,7 @@
 // swiftlint:disable:next line_length
 @available(*, deprecated, renamed: "MappedValueGenericRepresented", message: "Use MappedValueGenericRepresented instead.")
 public protocol MappedValueCollectionRepresented: MappedValueGenericRepresented
-  where MappedValueType: Sequence {
-  /// An array of the mapped values which lines up with each case.
-}
+  where MappedValueType: Sequence {}
 
 extension Array: MappedValues where Element: Equatable {
   public func key(value: Element) throws -> Int {
