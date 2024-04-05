@@ -120,11 +120,9 @@ jobs:
           fail-on-empty-output: true
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4        
-        env:
-          token: ${{ secrets.CODECOV_TOKEN }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          flags: macOS,${{ env.XCODE_NAME }}
+          flags: macOS,${{ env.XCODE_NAME }},${{ matrix.runs-on }}
       - name: Clean up spm build directory
         run: rm -rf .build
       - name: Lint
@@ -192,8 +190,6 @@ jobs:
           fail-on-empty-output: true
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4        
-        env:
-          token: ${{ secrets.CODECOV_TOKEN }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: macOS,${{ env.XCODE_NAME }}
