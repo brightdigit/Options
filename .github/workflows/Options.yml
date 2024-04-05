@@ -3,6 +3,8 @@ on:
   push:
     branches-ignore:
       - '*WIP'
+env:
+  PACKAGE_NAME: Options      
 jobs:
   build-ubuntu:
     name: Build on Ubuntu
@@ -70,6 +72,8 @@ jobs:
     name: Build on macOS
     runs-on: ${{ matrix.os }}
     if: "!contains(github.event.head_commit.message, 'ci skip')"
+    env:
+      PACKAGE_NAME: Options
     strategy:
       matrix:
         include:
