@@ -20,7 +20,14 @@ let swiftSettings = [
 
 let package = Package(
   name: "Options",
-  platforms: [.macOS(.v12)],
+  platforms: [
+    .macOS(.v10_15),
+    .iOS(.v13),
+    .tvOS(.v13),
+    .watchOS(.v6),
+    .macCatalyst(.v13),
+    .visionOS(.v1)
+  ],
   products: [
     .library(
       name: "Options",
