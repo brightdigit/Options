@@ -27,46 +27,43 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#if canImport(XCTest)
-  @testable import Options
-  import XCTest
+@testable import Options
+import XCTest
 
-  internal final class MappedEnumTests: XCTestCase {
-    private static let text = "\"a\""
-    internal func testDecoder() throws {
-      // swiftlint:disable:next force_unwrapping
-      let data = Self.text.data(using: .utf8)!
-      let decoder = JSONDecoder()
-      let actual: MappedEnum<MockCollectionEnum>
-      do {
-        actual = try decoder.decode(MappedEnum<MockCollectionEnum>.self, from: data)
-      } catch {
-        XCTAssertNil(error)
-        return
-      }
-      XCTAssertEqual(actual.value, .a)
+internal final class MappedEnumTests: XCTestCase {
+  private static let text = "\"a\""
+  internal func testDecoder() throws {
+    // swiftlint:disable:next force_unwrapping
+    let data = Self.text.data(using: .utf8)!
+    let decoder = JSONDecoder()
+    let actual: MappedEnum<MockCollectionEnum>
+    do {
+      actual = try decoder.decode(MappedEnum<MockCollectionEnum>.self, from: data)
+    } catch {
+      XCTAssertNil(error)
+      return
     }
-
-    internal func testEncoder() throws {
-      let encoder = JSONEncoder()
-      let describedEnum: MappedEnum<MockCollectionEnum> = .init(value: .a)
-      let data: Data
-      do {
-        data = try encoder.encode(describedEnum)
-      } catch {
-        XCTAssertNil(error)
-        return
-      }
-
-      let dataText = String(bytes: data, encoding: .utf8)
-
-      guard let text = dataText else {
-        XCTAssertNotNil(dataText)
-        return
-      }
-
-      XCTAssertEqual(text, Self.text)
-    }
+    XCTAssertEqual(actual.value, .a)
   }
 
-#endif
+  internal func testEncoder() throws {
+    let encoder = JSONEncoder()
+    let describedEnum: MappedEnum<MockCollectionEnum> = .init(value: .a)
+    let data: Data
+    do {
+      data = try encoder.encode(describedEnum)
+    } catch {
+      XCTAssertNil(error)
+      return
+    }
+
+    let dataText = String(bytes: data, encoding: .utf8)
+
+    guard let text = dataText else {
+      XCTAssertNotNil(dataText)
+      return
+    }
+
+    XCTAssertEqual(text, Self.text)
+  }
+}
