@@ -1,4 +1,4 @@
-// swift-tools-version:5.9.1
+// swift-tools-version: 5.9.1
 
 // swiftlint:disable explicit_top_level_acl
 // swiftlint:disable prefixed_toplevel_constant
@@ -15,8 +15,7 @@ let swiftSettings = [
   SwiftSetting.enableUpcomingFeature("ImplicitOpenExistentials"),
   SwiftSetting.enableUpcomingFeature("StrictConcurrency"),
   SwiftSetting.enableUpcomingFeature("DisableOutwardActorInference"),
-  SwiftSetting.enableExperimentalFeature("StrictConcurrency"),
-  SwiftSetting.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])
+  SwiftSetting.enableExperimentalFeature("StrictConcurrency")
 ]
 
 let package = Package(
@@ -29,7 +28,7 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-syntax", from: "510.0.0")
+    .package(url: "https://github.com/apple/swift-syntax", from: "509.0.0")
     // Dependencies declare other packages that this package depends on.
     // .package(url: /* package url */, from: "1.0.0")
   ],
