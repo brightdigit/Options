@@ -29,7 +29,7 @@
 
 import Foundation
 
-#if swift(>=5.9.1)
+#if swift(>=5.10)
   @attached(
     extension,
     conformances: MappedValueRepresentable, MappedValueGenericRepresented,

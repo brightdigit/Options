@@ -29,7 +29,7 @@
 
 import Options
 
-#if swift(>=5.9.1)
+#if swift(>=5.10)
   // swiftlint:disable identifier_name
   @Options
   internal enum MockCollectionEnum: Int, Sendable {
