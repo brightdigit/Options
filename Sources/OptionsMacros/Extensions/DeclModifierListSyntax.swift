@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  DeclModifierListSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,16 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension DeclModifierListSyntax {
+  internal init(keywordModifier: Keyword?) {
+    if let keywordModifier {
+      self.init {
+        DeclModifierSyntax(name: .keyword(keywordModifier))
+      }
+    } else {
+      self.init([])
+    }
+  }
 }

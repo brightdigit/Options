@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  Macro.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,6 +29,12 @@
 
 import Foundation
 
-internal struct MockError<T>: Error {
-  internal let value: T
-}
+#if swift(>=5.10)
+  @attached(
+    extension,
+    conformances: MappedValueRepresentable, MappedValueGenericRepresented,
+    names: named(MappedType), named(mappedValues)
+  )
+  @attached(peer, names: suffixed(Set))
+  public macro Options() = #externalMacro(module: "OptionsMacros", type: "OptionsMacro")
+#endif

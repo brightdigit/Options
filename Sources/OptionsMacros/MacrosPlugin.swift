@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  MacrosPlugin.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,13 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftCompilerPlugin
+import SwiftSyntax
+import SwiftSyntaxMacros
 
-internal struct MockError<T>: Error {
-  internal let value: T
+@main
+internal struct MacrosPlugin: CompilerPlugin {
+  internal let providingMacros: [any Macro.Type] = [
+    OptionsMacro.self
+  ]
 }

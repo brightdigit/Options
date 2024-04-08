@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  MappedValues.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,6 +29,12 @@
 
 import Foundation
 
-internal struct MockError<T>: Error {
-  internal let value: T
+/// Protocol which provides a method for ``MappedValueGenericRepresented`` to pull values.
+public protocol MappedValues<Value> {
+  /// Raw Value Type
+  associatedtype Value: Equatable
+  /// get the key vased on the value.
+  func key(value: Value) throws -> Int
+  /// get the value based on the key/index.
+  func value(key: Int) throws -> Value
 }

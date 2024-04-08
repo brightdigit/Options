@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  TypeAliasDeclSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,13 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension TypeAliasDeclSyntax {
+  internal init(name: TokenSyntax, for initializerTypeName: TokenSyntax) {
+    self.init(
+      name: name,
+      initializer: .init(value: IdentifierTypeSyntax(name: initializerTypeName))
+    )
+  }
 }

@@ -1,5 +1,5 @@
 //
-//  MappedValueRepresentable.swift
+//  MappedValueGenericRepresented.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,32 +27,35 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public protocol MappedValueRepresentable: RawRepresentable, CaseIterable, Sendable {
-  associatedtype MappedType = String
-  /// Gets the raw value based on the MappedType.
-  /// - Parameter value: MappedType value.
-  /// - Returns: The raw value of the enumeration based on the `MappedType `value.
-  static func rawValue(basedOn string: MappedType) throws -> RawValue
-
-  /// Gets the `MappedType` value based on the `rawValue`.
-  /// - Parameter rawValue: The raw value of the enumeration.
-  /// - Returns: The Mapped Type value based on the `rawValue`.
-  static func mappedValue(basedOn rawValue: RawValue) throws -> MappedType
+/// Protocol which simplifies ``MappedValueRepresentable``by using a ``MappedValues``.
+public protocol MappedValueGenericRepresented: MappedValueRepresentable
+  where RawValue == Int, MappedType: Equatable {
+  associatedtype MappedValueType: MappedValues<MappedType>
+  /// An array of the mapped values which lines up with each case.
+  static var mappedValues: MappedValueType { get }
 }
 
-extension MappedValueRepresentable {
-  /// Gets the mapped value of the enumeration.
+extension MappedValueGenericRepresented {
+  /// Gets the raw value based on the MappedType by finding the index of the mapped value.
+  /// - Parameter value: MappedType value.
+  /// - Throws: `MappedValueCollectionRepresentedError.valueNotFound`
+  ///   If the value was not found in the array
+  /// - Returns:
+  ///   The raw value of the enumeration
+  ///   based on the index the MappedType value was found at.
+  public static func rawValue(basedOn value: MappedType) throws -> RawValue {
+    try mappedValues.key(value: value)
+  }
+
+  /// Gets the mapped value based on the rawValue
+  /// by access the array at the raw value subscript.
   /// - Parameter rawValue: The raw value of the enumeration
   ///   which pretains to its index in the `mappedValues` Array.
   /// - Throws: `MappedValueCollectionRepresentedError.valueNotFound`
   ///   if the raw value (i.e. index) is outside the range of the `mappedValues` array.
   /// - Returns:
   ///   The Mapped Type value based on the value in the array at the raw value index.
-
-  /// Gets the mapped value of the enumeration.
-
-  /// - Returns: The `MappedType` value
-  public func mappedValue() throws -> MappedType {
-    try Self.mappedValue(basedOn: rawValue)
+  public static func mappedValue(basedOn rawValue: RawValue) throws -> MappedType {
+    try mappedValues.value(key: rawValue)
   }
 }

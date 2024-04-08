@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  DictionaryElementSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,21 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension DictionaryElementSyntax {
+  internal init(pair: (key: Int, value: String)) {
+    self.init(key: pair.key, value: pair.value)
+  }
+
+  internal init(key: Int, value: String) {
+    self.init(
+      key: IntegerLiteralExprSyntax(integerLiteral: key),
+      value: StringLiteralExprSyntax(
+        openingQuote: .stringQuoteToken(),
+        segments: .init([.stringSegment(.init(content: .stringSegment(value)))]),
+        closingQuote: .stringQuoteToken()
+      )
+    )
+  }
 }

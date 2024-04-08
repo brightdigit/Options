@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  ExtensionDeclSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,31 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension ExtensionDeclSyntax {
+  internal init(
+    enumDecl: EnumDeclSyntax,
+    conformingTo protocols: [SwiftSyntax.TypeSyntax]
+  ) throws {
+    let typeName = enumDecl.name
+
+    let access = enumDecl.modifiers.first(where: \.isNeededAccessLevelModifier)
+
+    let mappedValues = try VariableDeclSyntax.mappedValuesDeclarationForCases(
+      enumDecl.caseElements
+    )
+
+    self.init(
+      modifiers: DeclModifierListSyntax([access].compactMap { $0 }),
+      extendedType: IdentifierTypeSyntax(name: typeName),
+      inheritanceClause: InheritanceClauseSyntax(protocols: protocols),
+      memberBlock: MemberBlockSyntax(
+        members: MemberBlockItemListSyntax {
+          TypeAliasDeclSyntax(name: "MappedType", for: "String")
+          mappedValues
+        }
+      )
+    )
+  }
 }

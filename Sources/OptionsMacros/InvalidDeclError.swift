@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  InvalidDeclError.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+@preconcurrency import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+internal enum InvalidDeclError: Error, Sendable {
+  case kind(SyntaxKind)
+  case rawValue(Int)
 }

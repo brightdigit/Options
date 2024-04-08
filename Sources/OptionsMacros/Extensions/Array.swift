@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  Array.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,6 +29,14 @@
 
 import Foundation
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension Array {
+  internal init?(keyValues: KeyValues) where Element == String {
+    self.init()
+    for key in 0 ..< keyValues.count {
+      guard let value = keyValues.get(key) else {
+        return nil
+      }
+      append(value)
+    }
+  }
 }

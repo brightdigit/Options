@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  ArrayExprSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,17 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension ArrayExprSyntax {
+  internal init<T>(
+    from items: some Collection<T>,
+    _ closure: @escaping @Sendable (T) -> some ExprSyntaxProtocol
+  ) {
+    let values = items.map(closure).map { ArrayElementSyntax(expression: $0) }
+    let arrayElement = ArrayElementListSyntax {
+      .init(values)
+    }
+    self.init(elements: arrayElement)
+  }
 }

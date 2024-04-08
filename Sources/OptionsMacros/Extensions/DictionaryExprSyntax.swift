@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  DictionaryExprSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,15 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension DictionaryExprSyntax {
+  internal init(keyValues: KeyValues) {
+    let dictionaryElements = keyValues.dictionary.map(DictionaryElementSyntax.init(pair:))
+
+    let list = DictionaryElementListSyntax {
+      .init(dictionaryElements)
+    }
+    self.init(content: .elements(list))
+  }
 }

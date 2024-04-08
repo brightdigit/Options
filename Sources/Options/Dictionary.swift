@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  Dictionary.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,25 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+// swiftlint:disable:next line_length
+@available(*, deprecated, renamed: "MappedValueGenericRepresented", message: "Use MappedValueGenericRepresented instead.")
+public protocol MappedValueDictionaryRepresented: MappedValueGenericRepresented
+  where MappedValueType == [Int: MappedType] {}
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension Dictionary: MappedValues where Key == Int, Value: Equatable {
+  public func key(value: Value) throws -> Int {
+    let pair = first { $0.value == value }
+    guard let key = pair?.key else {
+      throw MappedValueRepresentableError.valueNotFound
+    }
+
+    return key
+  }
+
+  public func value(key: Int) throws -> Value {
+    guard let value = self[key] else {
+      throw MappedValueRepresentableError.valueNotFound
+    }
+    return value
+  }
 }

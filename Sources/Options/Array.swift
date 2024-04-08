@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  Array.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,24 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+// swiftlint:disable:next line_length
+@available(*, deprecated, renamed: "MappedValueGenericRepresented", message: "Use MappedValueGenericRepresented instead.")
+public protocol MappedValueCollectionRepresented: MappedValueGenericRepresented
+  where MappedValueType: Sequence {}
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension Array: MappedValues where Element: Equatable {
+  public func key(value: Element) throws -> Int {
+    guard let index = firstIndex(of: value) else {
+      throw MappedValueRepresentableError.valueNotFound
+    }
+
+    return index
+  }
+
+  public func value(key: Int) throws -> Element {
+    guard key < count, key >= 0 else {
+      throw MappedValueRepresentableError.valueNotFound
+    }
+    return self[key]
+  }
 }

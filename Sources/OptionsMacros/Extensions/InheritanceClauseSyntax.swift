@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  InheritanceClauseSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,18 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension InheritanceClauseSyntax {
+  internal init(protocols: [SwiftSyntax.TypeSyntax]) {
+    self.init(
+      inheritedTypes: .init {
+        .init(
+          protocols.map { typeSyntax in
+            InheritedTypeSyntax(type: typeSyntax)
+          }
+        )
+      }
+    )
+  }
 }

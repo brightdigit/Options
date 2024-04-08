@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  DeclModifierSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,13 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension DeclModifierSyntax {
+  internal var isNeededAccessLevelModifier: Bool {
+    switch name.tokenKind {
+    case .keyword(.public): return true
+    default: return false
+    }
+  }
 }

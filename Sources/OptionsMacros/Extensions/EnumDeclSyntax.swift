@@ -1,5 +1,5 @@
 //
-//  MockError.swift
+//  EnumDeclSyntax.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,8 +27,16 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import SwiftSyntax
 
-internal struct MockError<T>: Error {
-  internal let value: T
+extension EnumDeclSyntax {
+  internal var caseElements: [EnumCaseElementSyntax] {
+    memberBlock.members.flatMap { member in
+      guard let caseDecl = member.decl.as(EnumCaseDeclSyntax.self) else {
+        return [EnumCaseElementSyntax]()
+      }
+
+      return Array(caseDecl.elements)
+    }
+  }
 }
