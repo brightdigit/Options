@@ -1,5 +1,5 @@
 //
-//  MappedValueDictionaryRepresented.swift
+//  Array.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,23 +29,22 @@
 
 // swiftlint:disable:next line_length
 @available(*, deprecated, renamed: "MappedValueGenericRepresented", message: "Use MappedValueGenericRepresented instead.")
-public protocol MappedValueDictionaryRepresented: MappedValueGenericRepresented
-  where MappedValueType == [Int: MappedType] {}
+public protocol MappedValueCollectionRepresented: MappedValueGenericRepresented
+  where MappedValueType: Sequence {}
 
-extension Dictionary: MappedValues where Key == Int, Value: Equatable {
-  public func key(value: Value) throws -> Int {
-    let pair = first { $0.value == value }
-    guard let key = pair?.key else {
+extension Array: MappedValues where Element: Equatable {
+  public func key(value: Element) throws -> Int {
+    guard let index = firstIndex(of: value) else {
       throw MappedValueRepresentableError.valueNotFound
     }
 
-    return key
+    return index
   }
 
-  public func value(key: Int) throws -> Value {
-    guard let value = self[key] else {
+  public func value(key: Int) throws -> Element {
+    guard key < count, key >= 0 else {
       throw MappedValueRepresentableError.valueNotFound
     }
-    return value
+    return self[key]
   }
 }

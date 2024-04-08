@@ -1,5 +1,5 @@
 //
-//  LinuxMain.swift
+//  Dictionary.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,11 +27,25 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import XCTest
+// swiftlint:disable:next line_length
+@available(*, deprecated, renamed: "MappedValueGenericRepresented", message: "Use MappedValueGenericRepresented instead.")
+public protocol MappedValueDictionaryRepresented: MappedValueGenericRepresented
+  where MappedValueType == [Int: MappedType] {}
 
-import OptionsTests
+extension Dictionary: MappedValues where Key == Int, Value: Equatable {
+  public func key(value: Value) throws -> Int {
+    let pair = first { $0.value == value }
+    guard let key = pair?.key else {
+      throw MappedValueRepresentableError.valueNotFound
+    }
 
-var tests = [XCTestCaseEntry]()
-tests += OptionsTests.__allTests()
+    return key
+  }
 
-XCTMain(tests)
+  public func value(key: Int) throws -> Value {
+    guard let value = self[key] else {
+      throw MappedValueRepresentableError.valueNotFound
+    }
+    return value
+  }
+}

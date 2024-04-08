@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version: 5.10
 
 // swiftlint:disable explicit_top_level_acl
 // swiftlint:disable prefixed_toplevel_constant
@@ -15,13 +15,19 @@ let swiftSettings = [
   SwiftSetting.enableUpcomingFeature("ImplicitOpenExistentials"),
   SwiftSetting.enableUpcomingFeature("StrictConcurrency"),
   SwiftSetting.enableUpcomingFeature("DisableOutwardActorInference"),
-  SwiftSetting.enableExperimentalFeature("StrictConcurrency"),
-  SwiftSetting.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])
+  SwiftSetting.enableExperimentalFeature("StrictConcurrency")
 ]
 
 let package = Package(
   name: "Options",
-  platforms: [.macOS(.v10_15)],
+  platforms: [
+    .macOS(.v10_15),
+    .iOS(.v13),
+    .tvOS(.v13),
+    .watchOS(.v6),
+    .macCatalyst(.v13),
+    .visionOS(.v1)
+  ],
   products: [
     .library(
       name: "Options",
