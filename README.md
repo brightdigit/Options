@@ -10,16 +10,10 @@ Swift Package for more powerful `Enum` types.
 [![Twitter](https://img.shields.io/badge/twitter-@brightdigit-blue.svg?style=flat)](http://twitter.com/brightdigit)
 ![GitHub](https://img.shields.io/github/license/brightdigit/Options)
 ![GitHub issues](https://img.shields.io/github/issues/brightdigit/Options)
-
-[![macOS](https://github.com/brightdigit/Options/workflows/macOS/badge.svg)](https://github.com/brightdigit/Options/actions?query=workflow%3AmacOS)
-[![ubuntu](https://github.com/brightdigit/Options/workflows/ubuntu/badge.svg)](https://github.com/brightdigit/Options/actions?query=workflow%3Aubuntu)
-[![Travis (.com)](https://img.shields.io/travis/com/brightdigit/Options?logo=travis&?label=travis-ci)](https://travis-ci.com/brightdigit/Options)
-[![Bitrise](https://img.shields.io/bitrise/1c35b4466fb0a529?logo=bitrise&?label=bitrise&token=ryjPpLP4dkC5v-RV1fzKaw)](https://app.bitrise.io/app/1c35b4466fb0a529)
-[![CircleCI](https://img.shields.io/circleci/build/github/brightdigit/Options?logo=circleci&?label=circle-ci&token=a7ad8ba0bfc08f6c9c0ce786ac9c1ddfac871993)](https://app.circleci.com/pipelines/github/brightdigit/Options)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/brightdigit/Options/Options.yml?label=actions&logo=github&?branch=main)
 
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbrightdigit%2FOptions%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/brightdigit/Options)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbrightdigit%2FOptions%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/brightdigit/Options)
-
 
 [![Codecov](https://img.shields.io/codecov/c/github/brightdigit/Options)](https://codecov.io/gh/brightdigit/Options)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/brightdigit/Options)](https://www.codefactor.io/repository/github/brightdigit/Options)
@@ -75,24 +69,14 @@ If `OptionSet` requires an `Int` `RawType`, how can we parse and store as `Strin
 
 With **Options** we can enable `ContinuousIntegrationSystem` to do both:
 
-```swift 
+```swift
+@Options
 enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented {
   case github
   case travisci
   case circleci
   case bitrise
-  
-  typealias MappedType = String
-  
-  static let mappedValues = [
-    "github",
-    "travisci",
-    "circleci",
-    "bitrise"
-  ]
 }
-
-typealias ContinuousIntegrationSystemSet = EnumSet<ContinuousIntegrationSystem>
 
 let systems = ContinuousIntegrationSystemSet([.travisci, .github])
 ```
@@ -107,7 +91,7 @@ To integrate **Options** into your project using SPM, specify it in your Package
 let package = Package(
   ...
   dependencies: [
-    .package(url: "https://github.com/brightdigit/Options", from: "0.1.0")
+    .package(url: "https://github.com/brightdigit/Options", from: "1.0.0")
   ],
   targets: [
       .target(
