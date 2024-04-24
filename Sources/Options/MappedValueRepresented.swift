@@ -1,5 +1,5 @@
 //
-//  MappedValueGenericRepresented.swift
+//  MappedValueRepresented.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -28,14 +28,14 @@
 //
 
 /// Protocol which simplifies ``MappedValueRepresentable``by using a ``MappedValues``.
-public protocol MappedValueGenericRepresented: MappedValueRepresentable
+public protocol MappedValueRepresented: MappedValueRepresentable
   where RawValue == Int, MappedType: Equatable {
   associatedtype MappedValueType: MappedValues<MappedType>
   /// An array of the mapped values which lines up with each case.
   static var mappedValues: MappedValueType { get }
 }
 
-extension MappedValueGenericRepresented {
+extension MappedValueRepresented {
   /// Gets the raw value based on the MappedType by finding the index of the mapped value.
   /// - Parameter value: MappedType value.
   /// - Throws: `MappedValueCollectionRepresentedError.valueNotFound`

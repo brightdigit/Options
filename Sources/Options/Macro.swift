@@ -32,7 +32,7 @@ import Foundation
 #if swift(>=5.10)
   @attached(
     extension,
-    conformances: MappedValueRepresentable, MappedValueGenericRepresented,
+    conformances: MappedValueRepresentable, MappedValueRepresented,
     names: named(MappedType), named(mappedValues)
   )
   @attached(peer, names: suffixed(Set))

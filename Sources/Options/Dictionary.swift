@@ -29,7 +29,7 @@
 
 // swiftlint:disable:next line_length
 @available(*, deprecated, renamed: "MappedValueGenericRepresented", message: "Use MappedValueGenericRepresented instead.")
-public protocol MappedValueDictionaryRepresented: MappedValueGenericRepresented
+public protocol MappedValueDictionaryRepresented: MappedValueRepresented
   where MappedValueType == [Int: MappedType] {}
 
 extension Dictionary: MappedValues where Key == Int, Value: Equatable {
