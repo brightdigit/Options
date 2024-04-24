@@ -29,7 +29,7 @@
 
 import Foundation
 
-/// Protocol which provides a method for ``MappedValueGenericRepresented`` to pull values.
+/// Protocol which provides a method for ``MappedValueRepresented`` to pull values.
 public protocol MappedValues<Value> {
   /// Raw Value Type
   associatedtype Value: Equatable
