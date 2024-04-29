@@ -75,17 +75,83 @@ internal final class MappedValueCollectionRepresentedTests: XCTestCase {
     XCTAssertEqual(caughtError, .valueNotFound)
   }
 
+  internal func testCodingOptions() {
+    XCTAssertEqual(MockDictionaryEnum.codingOptions, .default)
+  }
+
+  internal func testInvalidRaw() throws {
+    let rawValue = Int.random(in: 5 ... 1_000)
+
+    let rawValueJSON = "\(rawValue)"
+
+    let rawValueJSONData = rawValueJSON.data(using: .utf8)!
+
+    let decodingError: DecodingError
+    do {
+      let value = try Self.decoder.decode(MockCollectionEnum.self, from: rawValueJSONData)
+      XCTAssertNil(value)
+      return
+    } catch let error as DecodingError {
+      decodingError = error
+    }
+
+    XCTAssertNotNil(decodingError)
+  }
+
   internal func testCodable() throws {
-    let encoder: JSONEncoder = .init()
-    let decoder: JSONDecoder = .init()
-    let enumValue = MockCollectionEnum.a
-    let stringValue = try String(data: encoder.encode(enumValue), encoding: .utf8)
-    let actualStringValue = try MockCollectionEnum.mappedValue(basedOn: enumValue.rawValue)
-    XCTAssertEqual(stringValue, "\"\(actualStringValue)\"")
-    XCTAssertEqual(stringValue, "\"a\"")
-    let expectedStringValue = "a"
-    let data = "\"\(expectedStringValue)\"".data(using: .utf8) ?? .init()
-    let actualValue = try decoder.decode(MockCollectionEnum.self, from: data)
-    XCTAssertEqual(actualValue, .a)
+    let argumentSets = MockCollectionEnum.allCases.flatMap {
+      [($0, true), ($0, false)]
+    }.flatMap {
+      [($0.0, $0.1, true), ($0.0, $0.1, false)]
+    }
+
+    for arguments in argumentSets {
+      try codableTest(value: arguments.0, allowMappedValue: arguments.1, encodeAsMappedValue: arguments.2)
+    }
+  }
+
+  static let encoder = JSONEncoder()
+  static let decoder = JSONDecoder()
+
+  private func codableTest(value: MockCollectionEnum, allowMappedValue: Bool, encodeAsMappedValue: Bool) throws {
+    let mappedValue = try value.mappedValue()
+    let rawValue = value.rawValue
+
+    let mappedValueJSON = "\"\(mappedValue)\""
+    let rawValueJSON = "\(rawValue)"
+
+    let mappedValueJSONData = mappedValueJSON.data(using: .utf8)!
+    let rawValueJSONData = rawValueJSON.data(using: .utf8)!
+
+    let oldOptions = MockCollectionEnum.codingOptions
+    MockCollectionEnum.codingOptions = .init([
+      allowMappedValue ? CodingOptions.allowMappedValueDecoding : nil,
+      encodeAsMappedValue ? CodingOptions.encodeAsMappedValue : nil
+    ].compactMap { $0 })
+
+    defer {
+      MockCollectionEnum.codingOptions = oldOptions
+    }
+
+    let mappedDecodeResult = Result {
+      try Self.decoder.decode(MockCollectionEnum.self, from: mappedValueJSONData)
+    }
+
+    let actualRawValueDecoded = try Self.decoder.decode(MockCollectionEnum.self, from: rawValueJSONData)
+
+    let actualEncodedJSON = try Self.encoder.encode(value)
+
+    switch (allowMappedValue, mappedDecodeResult) {
+    case (true, let .success(actualMappedDecodedValue)):
+      XCTAssertEqual(actualMappedDecodedValue, value)
+    case (false, let .failure(error)):
+      XCTAssert(error is DecodingError)
+    default:
+      XCTFail("Unmatched situation \(allowMappedValue): \(mappedDecodeResult)")
+    }
+
+    XCTAssertEqual(actualRawValueDecoded, value)
+
+    XCTAssertEqual(actualEncodedJSON, encodeAsMappedValue ? mappedValueJSONData : rawValueJSONData)
   }
 }

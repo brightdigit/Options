@@ -20,7 +20,8 @@ public struct MappedEnum<EnumType: MappedValueRepresentable>: Codable, Sendable
       let label = try container.decode(EnumType.MappedType.self)
       let rawValue = try EnumType.rawValue(basedOn: label)
       guard let value = EnumType(rawValue: rawValue) else {
-        preconditionFailure("Invalid Raw Value.")
+        assertionFailure("Every mappedValue should always return a valid rawValue.")
+        throw DecodingError.invalidRawValue(rawValue)
       }
       self.value = value
     }
@@ -42,7 +43,8 @@ public struct MappedEnum<EnumType: MappedValueRepresentable>: Codable, Sendable
       let label = try container.decode(EnumType.MappedType.self)
       let rawValue = try EnumType.rawValue(basedOn: label)
       guard let value = EnumType(rawValue: rawValue) else {
-        preconditionFailure("Invalid Raw Value.")
+        assertionFailure("Every mappedValue should always return a valid rawValue.")
+        throw DecodingError.invalidRawValue(rawValue)
       }
       self.value = value
     }

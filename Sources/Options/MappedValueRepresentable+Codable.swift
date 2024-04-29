@@ -59,9 +59,8 @@ extension SingleValueDecodingContainer {
     let rawValue = try T.rawValue(basedOn: mappedValues)
 
     guard let value = T(rawValue: rawValue) else {
-      throw DecodingError.dataCorrupted(
-        .init(codingPath: [], debugDescription: "Invalid Raw Value.")
-      )
+      assertionFailure("Every mappedValue should always return a valid rawValue.")
+      throw DecodingError.invalidRawValue(rawValue)
     }
 
     return value
