@@ -40,7 +40,7 @@ import Options
   }
 #else
   // swiftlint:disable identifier_name
-  internal enum MockDictionaryEnum: Int, MappedValueDictionaryRepresented {
+  internal enum MockDictionaryEnum: Int, MappedValueDictionaryRepresented, Codable {
     case a = 2
     case b = 5
     case c = 6
@@ -53,4 +53,6 @@ import Options
       12: "d"
     ]
   }
+
+  typealias MockDictionaryEnumSet = EnumSet<MockDictionaryEnum>
 #endif
