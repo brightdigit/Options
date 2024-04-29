@@ -77,7 +77,7 @@ internal final class EnumSetTests: XCTestCase {
     let values: [MockCollectionEnum] = [.a, .b, .c]
     let setA = EnumSet(values: values)
     XCTAssertEqual(setA.rawValue, 7)
-    let setB : MockCollectionEnumSet = [.a, .b, .c]
+    let setB: MockCollectionEnumSet = [.a, .b, .c]
     XCTAssertEqual(setB.rawValue, 7)
   }
 
