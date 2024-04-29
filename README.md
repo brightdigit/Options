@@ -4,7 +4,7 @@
 </p>
 <h1 align="center"> Options </h1>
 
-Swift Package for more powerful `Enum` types.
+More powerful options for `Enum` and `OptionSet` types.
 
 [![SwiftPM](https://img.shields.io/badge/SPM-Linux%20%7C%20iOS%20%7C%20macOS%20%7C%20watchOS%20%7C%20tvOS-success?logo=swift)](https://swift.org)
 [![Twitter](https://img.shields.io/badge/twitter-@brightdigit-blue.svg?style=flat)](http://twitter.com/brightdigit)
@@ -41,229 +41,144 @@ Swift Package for more powerful `Enum` types.
 
 # Introduction
 
-**Options** provides a features to `Enum` and `OptionSet` types such as:
+**Options** provides a powerful set of features for `Enum` and `OptionSet` types:
 
-* Providing additional value types besides the `RawType rawValue` 
-* Being able to interchange between `Enum` and `OptionSet` types
-* Using an additional value type for a `Codable` `OptionSet`
+- Providing additional representations for `Enum` types besides the `RawType rawValue` 
+- Being able to interchange between `Enum` and `OptionSet` types
+- Using an additional value type for a `Codable` `OptionSet`
 
-## Example
+# Requirements 
 
-Let's say you have `Enum` type:
+**Apple Platforms**
 
-```swift
-enum ContinuousIntegrationSystem {
-  case github
-  case travisci
-  case circleci
-  case bitrise
-}
-```
+- Xcode 14.1 or later
+- Swift 5.7.1 or later
+- iOS 16 / watchOS 9 / tvOS 16 / macOS 12 or later deployment targets
 
-We want two things:
+**Linux**
 
-* Use it as an `OptionSet` so we can store multiple CI sytems
-* Store and parse it via a `String`
-
-If `OptionSet` requires an `Int` `RawType`, how can we parse and store as `String`?
-
-With **Options** we can enable `ContinuousIntegrationSystem` to do both:
-
-```swift
-@Options
-enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented {
-  case github
-  case travisci
-  case circleci
-  case bitrise
-}
-
-let systems = ContinuousIntegrationSystemSet([.travisci, .github])
-```
+- Ubuntu 20.04 or later
+- Swift 5.7.1 or later
 
 # Installation
 
-Swift Package Manager is Apple's decentralized dependency manager to integrate libraries to your Swift projects. It is now fully integrated with Xcode 11.
+Use the Swift Package Manager to install this library via the repository url:
 
-To integrate **Options** into your project using SPM, specify it in your Package.swift file:
-
-```swift    
-let package = Package(
-  ...
-  dependencies: [
-    .package(url: "https://github.com/brightdigit/Options", from: "1.0.0")
-  ],
-  targets: [
-      .target(
-          name: "YourTarget",
-          dependencies: ["Options", ...]),
-      ...
-  ]
-)
 ```
+https://github.com/brightdigit/Options.git
+```
+
+Use version up to `1.0`.
 
 # Usage 
 
-## Setting up a [MappedValueRepresentable](/Documentation/Reference/Options/protocols/MappedValueRepresentable.md) Enum
+## Versatile Options with Enums and OptionSets
 
-So let's say we our `enum`:
+Let's say we are using an `Enum` for a list of popular social media networks:
 
 ```swift
-enum ContinuousIntegrationSystem: Int {
-  case github
-  case travisci
-  case circleci
-  case bitrise
+enum SocialNetwork : Int {
+  case digg
+  case aim
+  case bebo
+  case delicious
+  case eworld
+  case googleplus
+  case itunesping
+  case jaiku
+  case miiverse
+  case musically
+  case orkut
+  case posterous
+  case stumbleupon
+  case windowslive
+  case yahoo
 }
 ```
 
-We want to be able to make it available as an `OptionSet` so it needs an `RawType` of `Int`. 
-However we want to decode and encode it via `Codable` as a `String`. 
-
-**Options** has a protocol `MappedValueRepresentable` which allows to do that by implementing it.
+We'll be using this as a way to define a particular social handle:
 
 ```swift
-enum ContinuousIntegrationSystem: Int, MappedValueRepresentable {
-  case github
-  case travisci
-  case circleci
-  case bitrise
-  
-  static func rawValue(basedOn string: String) throws -> Int {
-    if (string == "github") {
-      return 0
-    } else {
-      ...
-    } else {
-      throw ...
-    }
-  }
-  
-  static func mappedValue(basedOn rawValue: Int) throws -> String {
-    if (rawValue == 0) {
-      return "github"
-    } else {
-      ...
-    } else {
-      throw ...
-    }
-  }
+struct SocialHandle {
+  let name : String
+  let network : SocialNetwork
 }
 ```
 
-This can be simplified further by using [`MappedValueCollectionRepresented`](/Documentation/Reference/Options/protocols/MappedValueCollectionRepresented.md).
-
-## Using [MappedValueCollectionRepresented](/Documentation/Reference/Options/protocols/MappedValueCollectionRepresented.md)
-
-By using `MappedValueCollectionRepresented`, you can simplify implementing [`MappedValueRepresentable`](/Documentation/Reference/Options/protocols/MappedValueRepresentable.md):
+However we also want to provide a way to have a unique set of social networks available:
 
 ```swift
-enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented {
-  case github
-  case travisci
-  case circleci
-  case bitrise
-  
-  static let mappedValues = [
-    "github",
-    "travisci",
-    "circleci",
-    "bitrise"
-  ]
+struct SocialNetworkSet : Int, OptionSet {
+...
+}
+
+let user : User
+let networks : SocialNetworkSet = user.availableNetworks()
+```
+
+We can then simply use ``Options()`` macro to generate both these types:
+
+```swift
+@Options
+enum SocialNetwork : Int {
+  case digg
+  case aim
+  case bebo
+  case delicious
+  case eworld
+  case googleplus
+  case itunesping
+  case jaiku
+  case miiverse
+  case musically
+  case orkut
+  case posterous
+  case stumbleupon
+  case windowslive
+  case yahoo
 }
 ```
 
-Now we we've made it simplifies implementing [`MappedValueRepresentable`](/Documentation/Reference/Options/protocols/MappedValueRepresentable.md) so let's look how to use it with `Codable`.
-
-## Codable Enums using a [MappedEnum](/Documentation/Reference/Options/structs/MappedEnum.md) Type
-
-So you've setup a `MappedValueRepresentable` `enum`, the next part is having the `MappedType` which in this case is `String` the part that's used in `Codable`.
-
-This is where [`MappedEnum`](/Documentation/Reference/Options/structs/MappedEnum.md) is used:
+Now we can use the newly create `SocialNetworkSet` type to store a set of values:
 
 ```swift
-struct BuildSetup : Codable {
-  let ci: MappedEnum<ContinuousIntegrationSystem>
-}
+let networks : SocialNetworkSet
+networks = [.aim, .delicious, .googleplus, .windowslive]
 ```
 
-Now if the `String` can be used in encoding and decoding the value rather than the `RawType` `Int`:
+## Multiple Value Types
+
+With the ``Options()`` macro, we add the ability to encode and decode values not only from their raw value but also from a another type such as a string. This is useful for when you want to store the values in JSON format.
+
+For instance, with a type like `SocialNetwork` we need need to store the value as an Integer:
 
 ```json
-{
-  "ci" : "github"
-}
+5
 ```
 
-Next, let's take a look how we could use `ContinuousIntegrationSystem` in an `OptionSet`.
+However by adding the ``Options()`` macro we can also decode from a String:
 
-## Using Enums in OptionSets with [EnumSet](/Documentation/Reference/Options/structs/EnumSet.md)
+```
+"googleplus"
+```
 
-[`EnumSet`](/Documentation/Reference/Options/structs/EnumSet.md) allows you to interchangeably use `Enum` with an `OptionSet`. [`EnumSet`](/Documentation/Reference/Options/structs/EnumSet.md) is a Generic `struct` while takes any `Enum` type with a `RawType`. So we can create an `OptionSet` instance which uses out `ContinuousIntegrationSystem`:
+## Creating an OptionSet
+
+We can also have a new `OptionSet` type created. ``Options()`` create a new `OptionSet` type with the suffix `-Set`. This new `OptionSet` will automatically work with your enum to create a distinct set of values. Additionally it will decode and encode your values as an Array of String. This means the value:
 
 ```swift
-let systems = EnumSet<ContinuousIntegrationSystem>([.travisci, .github]) 
+[.aim, .delicious, .googleplus, .windowslive]
 ```
 
-## Converting EnumSet to Enum Array
-
-If your `Enum` implements `CaseIterable`, then you can extract the individual `ContinuousIntegrationSystem` enum values with `.array()`:
-
-```swift
-enum ContinuousIntegrationSystem: Int, CaseIterable {
-  case github
-  case travisci
-  case circleci
-  case bitrise
-}
-
-let systems = EnumSet<ContinuousIntegrationSystem>([.travisci, .github]) 
-
-print(systems.array())
-```
-
-Lastly, let's put all this together.
-
-## Codable EnumSet using a MappedValueRepresentable Enum
-
-If your `enum` implements `MappedValueRepresentable` and you use it in an [`EnumSet`](/Documentation/Reference/Options/structs/EnumSet.md), then you can allow for your `OptionSet` to be `Codable` as an `Array` of values rather than the cumulative `rawValue`:
-
-```swift
-enum ContinuousIntegrationSystem: Int, MappedValueCollectionRepresented, CaseIterable {
-case github
-case travisci
-case circleci
-case bitrise
-
-static let mappedValues = [
-  "github",
-  "travisci",
-  "circleci",
-  "bitrise"
-]
-}
-
-
-struct BuildSetup : Codable {
-  let systems: EnumSet<ContinuousIntegrationSystem>
-}
-
-let systems = BuildSetup(systems: EnumSet<ContinuousIntegrationSystem>(values: [.travisci, .github]))
-```
-
-For our `systems` variable, our `Codable` data would be:
+is encoded as:
 
 ```json
-{
-  "systems" : ["travisci", "github"]
-}
+["aim", "delicious", "googleplus", "windowslive"]
 ```
-
-This will make it easier for making our data human-readable instead of using the `rawValue` of `3`.
 
 # Further Code Documentation
 
-[Documentation Here](/Documentation/Reference/Options/README.md)
+[Documentation Here](https://swiftpackageindex.com/brightdigit/Options/main/documentation/options)
 
 # License 
 
