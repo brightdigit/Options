@@ -26,18 +26,15 @@ More powerful options for `Enum` and `OptionSet` types.
 
 # Table of Contents
 
-   * [**Introduction**](#introduction)
-   * [**Features**](#features)
-   * [**Installation**](#installation)
-   * [**Usage**](#usage)
-      * [Setting up a **`MappedValueRepresentable`** Enum](#setting-up-a-mappedvaluerepresentable-enum)
-      * [Using **`MappedValueCollectionRepresented`**](#using-mappedvaluecollectionrepresented)
-      * [Codable Enums using a **`MappedEnum`** Type](#codable-enums-using-a-mappedenum-type)
-      * [Using Enums in OptionSets with **`EnumSet`**](#using-enums-in-optionsets-with-enumset)
-      * [Converting **`EnumSet`** to Enum Array](#converting-enumset-to-enum-array)
-      * [Codable **`EnumSet`** using a **`MappedValueRepresentable`** Enum](#codable-enumset-using-a-mappedvaluerepresentable-enum)
-      * [Further Code Documentation](#further-code-documentation)
-   * [**License**](#license)
+  * [Introduction](#introduction)
+  * [Requirements](#requirements)
+  * [Installation](#installation)
+  * [Usage](#usage)
+    * [Versatile Options with Enums and OptionSets](#versatile-options-with-enums-and-optionsets)
+    * [Multiple Value Types](#multiple-value-types)
+    * [Creating an OptionSet](#creating-an-optionset)
+  * [Further Code Documentation](#further-code-documentation)
+  * [License](#license)
 
 # Introduction
 
@@ -72,7 +69,7 @@ Use version up to `1.0`.
 
 # Usage 
 
-## Versatile Options with Enums and OptionSets
+## Versatile Options
 
 Let's say we are using an `Enum` for a list of popular social media networks:
 

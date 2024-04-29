@@ -1,6 +1,6 @@
 # ``Options``
 
-Swift Package for more powerful `Enum` types.
+More powerful options for `Enum` and `OptionSet` types.
 
 ## Overview
 
@@ -33,7 +33,7 @@ https://github.com/brightdigit/Options.git
 
 Use version up to `1.0`.
 
-### Versatile Options with Enums and OptionSets
+### Versatile Options
 
 Let's say we are using an `Enum` for a list of popular social media networks:
 
