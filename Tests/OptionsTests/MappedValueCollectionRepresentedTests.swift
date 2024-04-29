@@ -74,4 +74,18 @@ internal final class MappedValueCollectionRepresentedTests: XCTestCase {
 
     XCTAssertEqual(caughtError, .valueNotFound)
   }
+
+  internal func testCodable() throws {
+    let encoder: JSONEncoder = .init()
+    let decoder: JSONDecoder = .init()
+    let enumValue = MockCollectionEnum.a
+    let stringValue = try String(data: encoder.encode(enumValue), encoding: .utf8)
+    let actualStringValue = try MockCollectionEnum.mappedValue(basedOn: enumValue.rawValue)
+    XCTAssertEqual(stringValue, "\"\(actualStringValue)\"")
+    XCTAssertEqual(stringValue, "\"a\"")
+    let expectedStringValue = "a"
+    let data = "\"\(expectedStringValue)\"".data(using: .utf8) ?? .init()
+    let actualValue = try decoder.decode(MockCollectionEnum.self, from: data)
+    XCTAssertEqual(actualValue, .a)
+  }
 }

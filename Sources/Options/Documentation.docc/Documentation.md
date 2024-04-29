@@ -6,9 +6,9 @@ Swift Package for more powerful `Enum` types.
 
 **Options** provides a powerful set of features for `Enum` and `OptionSet` types:
 
-* Providing additional representations for `Enum` types besides the `RawType rawValue` 
-* Being able to interchange between `Enum` and `OptionSet` types
-* Using an additional value type for a `Codable` `OptionSet`
+- Providing additional representations for `Enum` types besides the `RawType rawValue` 
+- Being able to interchange between `Enum` and `OptionSet` types
+- Using an additional value type for a `Codable` `OptionSet`
 
 ### Requirements 
 
@@ -38,7 +38,7 @@ Use version up to `1.0`.
 Let's say we are using an `Enum` for a list of popular social media networks:
 
 ```swift
-enum SocialNetwork {
+enum SocialNetwork : Int {
   case digg
   case aim
   case bebo
@@ -69,7 +69,7 @@ struct SocialHandle {
 However we also want to provide a way to have a unique set of social networks available:
 
 ```swift
-struct SocialNetworks : OptionSet {
+struct SocialNetworkSet : Int, OptionSet {
 ...
 }
 
@@ -77,7 +77,39 @@ let user : User
 let networks : SocialNetworks = user.availableNetworks()
 ```
 
-Insert more text here.
+We can then simply use ``Options()`` macro to generate both these types:
+
+```swift
+@Options
+enum SocialNetwork : Int {
+  case digg
+  case aim
+  case bebo
+  case delicious
+  case eworld
+  case googleplus
+  case itunesping
+  case jaiku
+  case miiverse
+  case musically
+  case orkut
+  case posterous
+  case stumbleupon
+  case windowslive
+  case yahoo
+}
+```
+
+Now we can use the newly create `SocialNetworkSet` type to store a set of values:
+
+```swift
+let networks : SocialNetworks
+networks = [.aim, .delicious, .googleplus, .windowslive]
+```
+
+### Multiple Value Types
+
+With the ``Options()`` macro, we add the ability to encode and decode values not only from their raw Integer value but also from a String. This is useful for when you want to store the values in  
 
 ## Topics
 

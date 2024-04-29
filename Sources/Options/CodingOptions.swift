@@ -1,5 +1,5 @@
 //
-//  MockCollectionEnum.swift
+//  CodingOptions.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,30 +27,18 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Options
+import Foundation
 
-#if swift(>=5.10)
-  // swiftlint:disable identifier_name
-  @Options
-  internal enum MockCollectionEnum: Int, Sendable, Codable {
-    case a
-    case b
-    case c
-    case d
+public struct CodingOptions: OptionSet, Sendable {
+  public static let allowMappedValueDecoding: CodingOptions = .init(rawValue: 1)
+  public static let encodeAsMappedValue: CodingOptions = .init(rawValue: 2)
+
+  public static let `default`: CodingOptions =
+    [.allowMappedValueDecoding, encodeAsMappedValue]
+
+  public let rawValue: Int
+
+  public init(rawValue: Int) {
+    self.rawValue = rawValue
   }
-#else
-  // swiftlint:disable identifier_name
-  internal enum MockCollectionEnum: Int, MappedValueCollectionRepresented {
-    case a
-    case b
-    case c
-    case d
-    internal typealias MappedType = String
-    internal static let mappedValues = [
-      "a",
-      "b",
-      "c",
-      "d"
-    ]
-  }
-#endif
+}

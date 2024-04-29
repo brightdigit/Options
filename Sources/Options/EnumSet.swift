@@ -1,5 +1,6 @@
 /// Generic struct for using Enums with RawValue type of Int as an Optionset
-public struct EnumSet<EnumType: RawRepresentable>: OptionSet, Sendable
+public struct EnumSet<EnumType: RawRepresentable>:
+  OptionSet, Sendable, ExpressibleByArrayLiteral
   where EnumType.RawValue == Int {
   public typealias RawValue = EnumType.RawValue
 
@@ -10,6 +11,10 @@ public struct EnumSet<EnumType: RawRepresentable>: OptionSet, Sendable
   /// - Parameter rawValue: Integer raw value of the OptionSet
   public init(rawValue: Int) {
     self.rawValue = rawValue
+  }
+
+  public init(arrayLiteral elements: EnumType...) {
+    self.init(values: elements)
   }
 
   /// Creates the EnumSet based on the values in the array.
