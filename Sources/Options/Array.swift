@@ -32,8 +32,13 @@
 public protocol MappedValueCollectionRepresented: MappedValueRepresented
   where MappedValueType: Sequence {}
 
-extension Array: MappedValues where Element: Equatable {
-  public func key(value: Element) throws -> Int {
+extension Array: MappedValues where Element: Equatable {}
+
+extension Collection where Element: Equatable, Self: MappedValues {
+  /// Get the index based on the value passed.
+  /// - Parameter value: Value to search.
+  /// - Returns: Index found.
+  public func key(value: Element) throws -> Self.Index {
     guard let index = firstIndex(of: value) else {
       throw MappedValueRepresentableError.valueNotFound
     }
@@ -41,8 +46,11 @@ extension Array: MappedValues where Element: Equatable {
     return index
   }
 
-  public func value(key: Int) throws -> Element {
-    guard key < count, key >= 0 else {
+  /// Gets the value based on the index.
+  /// - Parameter key: The index.
+  /// - Returns: The value at index.
+  public func value(key: Self.Index) throws -> Element {
+    guard key < endIndex, key >= startIndex else {
       throw MappedValueRepresentableError.valueNotFound
     }
     return self[key]

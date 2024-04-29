@@ -27,9 +27,13 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+/// An enum which has an additional value attached.
+/// - Note: ``Options()`` macro will automatically set this up for you.
 public protocol MappedValueRepresentable: RawRepresentable, CaseIterable, Sendable {
+  /// The additional value type.
   associatedtype MappedType = String
 
+  /// Options for how the enum should be decoded or encoded.
   static var codingOptions: CodingOptions {
     get
   }

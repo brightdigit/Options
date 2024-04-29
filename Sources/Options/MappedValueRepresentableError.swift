@@ -34,6 +34,7 @@ import Foundation
   /// An Error thrown when the `MappedType` value or `RawType` value
   /// are invalid for an `Enum`.
   public enum MappedValueRepresentableError: Error, Sendable {
+    /// Whenever a value or key cannot be found.
     case valueNotFound
   }
 #else

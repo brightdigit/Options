@@ -1,15 +1,42 @@
-/// Generic struct for using Enums with RawValue type of Int as an Optionset
+/// Generic struct for using Enums with `RawValue`.
+///
+/// If you have an `enum` such as:
+/// ```swift
+/// @Options
+/// enum SocialNetwork : Int {
+///   case digg
+///   case aim
+///   case bebo
+///   case delicious
+///   case eworld
+///   case googleplus
+///   case itunesping
+///   case jaiku
+///   case miiverse
+///   case musically
+///   case orkut
+///   case posterous
+///   case stumbleupon
+///   case windowslive
+///   case yahoo
+/// }
+/// ```
+///  An ``EnumSet`` could be used to store multiple values as an `OptionSet`:
+/// ```swift
+/// let socialNetworks : EnumSet<SocialNetwork> =
+///   [.digg, .aim, .yahoo, .miiverse]
+/// ```
 public struct EnumSet<EnumType: RawRepresentable>:
   OptionSet, Sendable, ExpressibleByArrayLiteral
-  where EnumType.RawValue == Int {
+  where EnumType.RawValue: FixedWidthInteger & Sendable {
   public typealias RawValue = EnumType.RawValue
 
   /// Raw Value of the OptionSet
-  public let rawValue: Int
+  public let rawValue: RawValue
 
   /// Creates the EnumSet based on the `rawValue`
   /// - Parameter rawValue: Integer raw value of the OptionSet
-  public init(rawValue: Int) {
+  public init(rawValue: RawValue) {
     self.rawValue = rawValue
   }
 
@@ -25,13 +52,19 @@ public struct EnumSet<EnumType: RawRepresentable>:
   }
 
   internal static func cumulativeValue(
-    basedOnRawValues rawValues: Set<Int>) -> Int {
+    basedOnRawValues rawValues: Set<RawValue>) -> RawValue {
     rawValues.map { 1 << $0 }.reduce(0, |)
   }
 }
 
+extension FixedWidthInteger {
+  fileprivate static var one: Self {
+    1
+  }
+}
+
 extension EnumSet where EnumType: CaseIterable {
-  internal static func enums(basedOnRawValue rawValue: Int) -> [EnumType] {
+  internal static func enums(basedOnRawValue rawValue: RawValue) -> [EnumType] {
     let cases = EnumType.allCases.sorted { $0.rawValue < $1.rawValue }
     var values = [EnumType]()
     var current = rawValue
@@ -39,8 +72,8 @@ extension EnumSet where EnumType: CaseIterable {
       guard current > 0 else {
         break
       }
-      let rawValue = 1 << item.rawValue
-      if current & rawValue != 0 {
+      let rawValue = RawValue.one << item.rawValue
+      if current & rawValue != .zero {
         values.append(item)
         current -= rawValue
       }

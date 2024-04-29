@@ -32,8 +32,8 @@
 public protocol MappedValueDictionaryRepresented: MappedValueRepresented
   where MappedValueType == [Int: MappedType] {}
 
-extension Dictionary: MappedValues where Key == Int, Value: Equatable {
-  public func key(value: Value) throws -> Int {
+extension Dictionary: MappedValues where Value: Equatable {
+  public func key(value: Value) throws -> Key {
     let pair = first { $0.value == value }
     guard let key = pair?.key else {
       throw MappedValueRepresentableError.valueNotFound
@@ -42,7 +42,7 @@ extension Dictionary: MappedValues where Key == Int, Value: Equatable {
     return key
   }
 
-  public func value(key: Int) throws -> Value {
+  public func value(key: Key) throws -> Value {
     guard let value = self[key] else {
       throw MappedValueRepresentableError.valueNotFound
     }

@@ -30,6 +30,8 @@
 import Foundation
 
 #if swift(>=5.10)
+  /// Sets an enumeration up to implement
+  /// ``MappedValueRepresentable`` and ``MappedValueRepresented``.
   @attached(
     extension,
     conformances: MappedValueRepresentable, MappedValueRepresented,

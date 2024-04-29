@@ -1,4 +1,10 @@
 /// A generic struct for enumerations which allow for additional values attached.
+@available(
+  *,
+  deprecated,
+  renamed: "MappedValueRepresentable",
+  message: "Use `MappedValueRepresentable` with `CodingOptions`."
+)
 public struct MappedEnum<EnumType: MappedValueRepresentable>: Codable, Sendable
   where EnumType.MappedType: Codable {
   /// Base Enumeraion value.

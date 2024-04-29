@@ -29,8 +29,9 @@
 
 /// Protocol which simplifies ``MappedValueRepresentable``by using a ``MappedValues``.
 public protocol MappedValueRepresented: MappedValueRepresentable
-  where RawValue == Int, MappedType: Equatable {
-  associatedtype MappedValueType: MappedValues<MappedType>
+  where MappedType: Equatable {
+  /// A object to lookup values and keys for mapped values.
+  associatedtype MappedValueType: MappedValues<RawValue, MappedType>
   /// An array of the mapped values which lines up with each case.
   static var mappedValues: MappedValueType { get }
 }

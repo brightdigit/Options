@@ -30,11 +30,13 @@
 import Foundation
 
 /// Protocol which provides a method for ``MappedValueRepresented`` to pull values.
-public protocol MappedValues<Value> {
+public protocol MappedValues<Key, Value> {
   /// Raw Value Type
   associatedtype Value: Equatable
+  /// Key Value Type
+  associatedtype Key: Equatable
   /// get the key vased on the value.
-  func key(value: Value) throws -> Int
+  func key(value: Value) throws -> Key
   /// get the value based on the key/index.
-  func value(key: Int) throws -> Value
+  func value(key: Key) throws -> Value
 }

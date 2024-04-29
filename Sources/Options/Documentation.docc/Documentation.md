@@ -74,7 +74,7 @@ struct SocialNetworkSet : Int, OptionSet {
 }
 
 let user : User
-let networks : SocialNetworks = user.availableNetworks()
+let networks : SocialNetworkSet = user.availableNetworks()
 ```
 
 We can then simply use ``Options()`` macro to generate both these types:
@@ -103,13 +103,39 @@ enum SocialNetwork : Int {
 Now we can use the newly create `SocialNetworkSet` type to store a set of values:
 
 ```swift
-let networks : SocialNetworks
+let networks : SocialNetworkSet
 networks = [.aim, .delicious, .googleplus, .windowslive]
 ```
 
 ### Multiple Value Types
 
-With the ``Options()`` macro, we add the ability to encode and decode values not only from their raw Integer value but also from a String. This is useful for when you want to store the values in  
+With the ``Options()`` macro, we add the ability to encode and decode values not only from their raw value but also from a another type such as a string. This is useful for when you want to store the values in JSON format.
+
+For instance, with a type like `SocialNetwork` we need need to store the value as an Integer:
+
+```json
+5
+```
+
+However by adding the ``Options()`` macro we can also decode from a String:
+
+```
+"googleplus"
+```
+
+### Creating an OptionSet
+
+We can also have a new `OptionSet` type created. ``Options()`` create a new `OptionSet` type with the suffix `-Set`. This new `OptionSet` will automatically work with your enum to create a distinct set of values. Additionally it will decode and encode your values as an Array of String. This means the value:
+
+```swift
+[.aim, .delicious, .googleplus, .windowslive]
+```
+
+is encoded as:
+
+```json
+["aim", "delicious", "googleplus", "windowslive"]
+```
 
 ## Topics
 
@@ -122,7 +148,7 @@ With the ``Options()`` macro, we add the ability to encode and decode values not
 
 ### Advanced customization
 
-- ``MappedEnum``
+- ``CodingOptions``
 - ``MappedValues``
 
 ### Errors
@@ -133,3 +159,4 @@ With the ``Options()`` macro, we add the ability to encode and decode values not
 
 - ``MappedValueCollectionRepresented``
 - ``MappedValueDictionaryRepresented``
+- ``MappedEnum``

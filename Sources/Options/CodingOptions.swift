@@ -29,10 +29,15 @@
 
 import Foundation
 
+/// Options for how a ``MappedValueRepresentable`` type is encoding and decoded.
 public struct CodingOptions: OptionSet, Sendable {
+  /// Allow decoding from String
   public static let allowMappedValueDecoding: CodingOptions = .init(rawValue: 1)
+
+  /// Encode the value as a String.
   public static let encodeAsMappedValue: CodingOptions = .init(rawValue: 2)
 
+  /// Default options.
   public static let `default`: CodingOptions =
     [.allowMappedValueDecoding, encodeAsMappedValue]
 
