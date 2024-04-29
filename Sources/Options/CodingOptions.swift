@@ -1,5 +1,5 @@
 //
-//  Array.swift
+//  CodingOptions.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,32 +27,23 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-// swiftlint:disable:next line_length
-@available(*, deprecated, renamed: "MappedValueGenericRepresented", message: "Use MappedValueGenericRepresented instead.")
-public protocol MappedValueCollectionRepresented: MappedValueRepresented
-  where MappedValueType: Sequence {}
+import Foundation
 
-extension Array: MappedValues where Element: Equatable {}
+/// Options for how a ``MappedValueRepresentable`` type is encoding and decoded.
+public struct CodingOptions: OptionSet, Sendable {
+  /// Allow decoding from String
+  public static let allowMappedValueDecoding: CodingOptions = .init(rawValue: 1)
 
-extension Collection where Element: Equatable, Self: MappedValues {
-  /// Get the index based on the value passed.
-  /// - Parameter value: Value to search.
-  /// - Returns: Index found.
-  public func key(value: Element) throws -> Self.Index {
-    guard let index = firstIndex(of: value) else {
-      throw MappedValueRepresentableError.valueNotFound
-    }
+  /// Encode the value as a String.
+  public static let encodeAsMappedValue: CodingOptions = .init(rawValue: 2)
 
-    return index
-  }
+  /// Default options.
+  public static let `default`: CodingOptions =
+    [.allowMappedValueDecoding, encodeAsMappedValue]
 
-  /// Gets the value based on the index.
-  /// - Parameter key: The index.
-  /// - Returns: The value at index.
-  public func value(key: Self.Index) throws -> Element {
-    guard key < endIndex, key >= startIndex else {
-      throw MappedValueRepresentableError.valueNotFound
-    }
-    return self[key]
+  public let rawValue: Int
+
+  public init(rawValue: Int) {
+    self.rawValue = rawValue
   }
 }

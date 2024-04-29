@@ -76,7 +76,6 @@ opt_in_rules:
   - sorted_first_last
   - sorted_imports
   - static_operator
-  - strict_fileprivate
   - strong_iboutlet
   - toggle_bool
   - trailing_closure
